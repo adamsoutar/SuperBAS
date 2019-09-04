@@ -1,10 +1,58 @@
 ﻿using System;
+using System.Linq;
+
 namespace SuperBAS.Parser
 {
-    public class TokeniserUtils
+    public static class TokeniserUtils
     {
-        public TokeniserUtils()
+        private static char[] whitespace = "\t ".ToCharArray();
+        // New lines are significant, they're punctuation not whitespace
+        private static char[] punctuation = ":$,()\n".ToCharArray();
+        // Includes . for 3.14, there's no
+        // properties in BASIC, so any time we see
+        // a . it's safe to assume a number, ie .5, .2
+        private static char[] numbers = ".0123456789".ToCharArray();
+        private static char[] letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        // Strings valid for the body of an identifier such as myString2
+        private static char[] identifierChars = numbers.Concat(letters).ToArray();
+
+        private static bool Contains<T> (T[] a, T c)
         {
+            return Array.IndexOf(a, c) != -1;
+        }
+
+        public static bool IsWhitespace(char c)
+        {
+            return Contains(whitespace, c);
+        }
+        public static bool IsPunctuation(char c)
+        {
+            return Contains(punctuation, c);
+        }
+        public static bool IsNumber(char c)
+        {
+            return Contains(numbers, c);
+        }
+        public static bool IsIdentifierStart (char c)
+        {
+            return Contains(letters, c);
+        }
+        public static bool IsIdentifierChar (char c)
+        {
+            return Contains(identifierChars, c);
+        }
+
+        public static bool IsOperator (string s)
+        {
+            return Contains(LangUtils.BinaryOperators.Keys.ToArray(), s);
+        }
+        public static bool IsOperator(char c)
+        {
+            return IsOperator(c.ToString());
+        }
+        public static bool IsKeyword(string s)
+        {
+            return Contains(LangUtils.Keywords, s);
         }
     }
 }
