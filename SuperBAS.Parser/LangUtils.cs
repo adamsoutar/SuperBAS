@@ -10,12 +10,13 @@ namespace SuperBAS.Parser
         public static Dictionary<string, int> BinaryOperators = new Dictionary<string, int>
         {
             ["="] = 1,
-            ["||"] = 2,
-            ["&&"] = 3,
             ["<"] = 7,
             [">"] = 7,
             ["<="] = 7,
             [">="] = 7,
+            ["!="] = 7,
+            ["AND"] = 7,
+            ["OR"] = 7,
             ["NOT"] = 7,
             ["+"] = 15,
             ["-"] = 10,
@@ -25,12 +26,12 @@ namespace SuperBAS.Parser
         };
         public static string[] Commands =
         {
-            "PRINT", "IF", "LET", "GOTO", "GOSUB", "RETURN"
+            "PRINT", "IF", "LET", "GOTO", "GOSUB", "RETURN", "CLS", "FOR", "NEXT"
         };
         // Reserved words, some of which are not commands
         public static string[] Keywords = Commands.Concat(new string[]
         {
-            "THEN"
+            "THEN", "ELSE", "TO", "STEP"
         }).ToArray();
     }
 }

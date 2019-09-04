@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SuperBAS.Parser\SuperBAS.Parser.csproj" />
+    <ProjectReference Include="..\SuperBAS.Transpiler.CSharp\SuperBAS.Transpiler.CSharp.csproj" />
   </ItemGroup>
 </Project>

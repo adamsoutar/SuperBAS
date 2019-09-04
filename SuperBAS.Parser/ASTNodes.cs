@@ -41,13 +41,6 @@ namespace SuperBAS.Parser
         public ASTCommand Else;
     }
 
-    public class ASTAssignment : IASTNode
-    {
-        public ASTNodeType Type { get => ASTNodeType.Assignment; }
-        public ASTVariable Left;
-        public IASTNode Right;
-    }
-
     public class ASTKeyword : IASTNode
     {
         public ASTNodeType Type { get => ASTNodeType.Keyword; }
@@ -72,5 +65,13 @@ namespace SuperBAS.Parser
         public ASTNodeType Type { get => ASTNodeType.Command; }
         public string Command;
         public IASTNode Operand;
+    }
+
+    public class ASTFor : IASTNode
+    {
+        public ASTNodeType Type { get => ASTNodeType.For; }
+        public IASTNode Assignment;
+        public IASTNode ToMax;
+        public IASTNode Step;
     }
 }

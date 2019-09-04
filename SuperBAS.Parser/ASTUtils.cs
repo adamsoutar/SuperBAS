@@ -9,11 +9,11 @@ namespace SuperBAS.Parser
         Variable,
         Call,
         If,
-        Assignment,
         Binary,
         Keyword,
         Command,
-        InvalidNode
+        InvalidNode,
+        For
     }
 
     // Interface for a generic Abstract Syntax Tree node

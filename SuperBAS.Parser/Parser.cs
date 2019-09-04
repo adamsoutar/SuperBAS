@@ -109,7 +109,15 @@ namespace SuperBAS.Parser
             }
             else
             {
-                var operand = ParseExpression();
+                IASTNode operand;
+                if (IsNextPunctuation(":") || IsNextPunctuation("\n"))
+                {
+                    // Operands are optional for commands like CLS
+                    operand = new ASTInvalidNode();
+                } else
+                {
+                    operand = ParseExpression();
+                }
                 return new ASTCommand()
                 {
                     Command = ((ASTKeyword)command).Keyword,
@@ -162,6 +170,28 @@ namespace SuperBAS.Parser
                     Then = (ASTCommand)then,
                     Else = elseStatement
                 };
+            }
+
+            if (token.Type == TokenType.Keyword && token.Value == "FOR")
+            {
+                // Loooops
+                var loop = new ASTFor()
+                {
+                    Assignment = ParseExpression()
+                };
+                ExpectKeyword("TO");
+                loop.ToMax = ParseExpression();
+
+                loop.Step = new ASTNumber()
+                {
+                    Value = 1
+                };
+                if (IsNextKeyword("STEP"))
+                {
+                    tokenStream.Read();
+                    loop.Step = ParseExpression();
+                }
+                return loop;
             }
 
 
