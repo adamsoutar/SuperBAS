@@ -30,7 +30,7 @@ namespace SuperBAS.Parser
     {
         public ASTNodeType Type { get => ASTNodeType.Call; }
         public ASTVariable FunctionName;
-        public IASTNode Arguments;
+        public ASTCompoundExpression Arguments;
     }
 
     public class ASTIf : IASTNode
@@ -70,7 +70,7 @@ namespace SuperBAS.Parser
     public class ASTFor : IASTNode
     {
         public ASTNodeType Type { get => ASTNodeType.For; }
-        public IASTNode Assignment;
+        public ASTBinary Assignment;
         public IASTNode ToMax;
         public IASTNode Step;
     }

@@ -26,7 +26,24 @@ namespace SuperBAS.Parser
         };
         public static string[] Commands =
         {
-            "PRINT", "IF", "LET", "GOTO", "GOSUB", "RETURN", "CLS", "FOR", "NEXT"
+            "PRINT", "IF", "LET", "GOTO", "GOSUB", "RETURN", "CLS", "FOR", "NEXT",
+            "TOPOF", "DIM", "LIST", "LISTADD", "LISTRM"
+        };
+        public static ASTVariable[] StdLib =
+        {
+            new ASTVariable() {
+                Name = "STR",
+                IsString = true
+            },
+            new ASTVariable() {
+                Name = "VAL",
+                IsString = false
+            },
+            new ASTVariable()
+            {
+                Name = "LEN",
+                IsString = false
+            }
         };
         // Reserved words, some of which are not commands
         public static string[] Keywords = Commands.Concat(new string[]

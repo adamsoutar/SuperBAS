@@ -10,7 +10,7 @@ namespace UserProgram
     {
         /*DECLARATIONS*/
 
-        static void Gosub(float lineNumber)
+        static void Gosub(double lineNumber)
         {
         GosubStart:
             switch (lineNumber)

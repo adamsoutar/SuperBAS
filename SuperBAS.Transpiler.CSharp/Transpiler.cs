@@ -23,8 +23,30 @@ namespace SuperBAS.Transpiler.CSharp
 
         private void DefineVar (VarType type, string name)
         {
-            if (type == VarType.Number) numbers.Add(name);
-            if (type == VarType.String) strings.Add(name);
+            if (Array.IndexOf(LangUtils.StdLib, name) != -1)
+            {
+                Croak($"Program attempted to define name \"{name}\" which already exists in the standard library.");
+            }
+            switch (type)
+            {
+                case VarType.Number:
+                    numbers.Add(name);
+                    break;
+                case VarType.String:
+                    strings.Add(name);
+                    break;
+                case VarType.Bool:
+                    bools.Add(name);
+                    break;
+                default:
+                    Croak("Invalid VarType passed to DefineVar");
+                    break;
+            }
+        }
+
+        public static void Croak (string msg)
+        {
+            throw new Exception($"C# Transpiler core croaked: {msg}");
         }
 
         public Transpiler (string file)
@@ -59,7 +81,7 @@ namespace SuperBAS.Transpiler.CSharp
             foreach (var str in strings)
                 final += $"static string {str}_string = \"\";\n";
             foreach (var num in numbers)
-                final += $"static double {num}_number = 0f;\n";
+                final += $"static double {num}_number = 0.0;\n";
             foreach (var bl in bools)
                 final += $"static bool {bl}_bool = false;\n";
             return final;

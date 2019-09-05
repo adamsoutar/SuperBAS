@@ -6,17 +6,27 @@ using SuperBAS.Parser;
 
 namespace SuperBAS.Transpiler.CSharp
 {
+    public struct Loop
+    {
+        public float DefinedOnLine;
+        public IASTNode Step;
+        public IASTNode Start;
+        public ASTBinary Condition;
+        public ASTVariable Counter;
+    }
+
     public class TemplateCode
     {
         private Action<VarType, string> DefineVar;
         public List<float> LineNumbers = new List<float>();
+        public Dictionary<string, Loop> loops = new Dictionary<string, Loop>();
 
-        public TemplateCode (Action<VarType, string> Define)
+        public TemplateCode(Action<VarType, string> Define)
         {
             DefineVar = Define;
         }
 
-        public string GetCodeForProgram (SyntaxTreeTopLevel[] lines)
+        public string GetCodeForProgram(SyntaxTreeTopLevel[] lines)
         {
             string final = "";
             for (int i = 0; i < lines.Length; i++)
@@ -29,25 +39,61 @@ namespace SuperBAS.Transpiler.CSharp
             return final;
         }
 
-        public string GetCodeForLine (SyntaxTreeTopLevel line, float nextLine)
+        public string GetCodeForLine(SyntaxTreeTopLevel line, float nextLine)
         {
             LineNumbers.Add(line.LineNumber);
             string code = $"case {line.LineNumber}:\n";
             foreach (var command in line.Commands)
             {
-                // TODO: Handle multi-statement ifs
-                code += GetCodeForCommand(command) + "\n";
+                // TODO: Handle multi-statement ifs?
+                code += GetCodeForCommand(command, line.LineNumber) + "\n";
             }
             code += $"goto case {nextLine};\n";
             return code;
         }
 
-        private void Croak (string msg)
+        private void Croak(string msg)
         {
-            throw new Exception($"C# Transpiler croaked: {msg}");
+            throw new Exception($"C# Transpiler templater croaked: {msg}");
         }
 
-        private string GetCodeForCommand (IASTNode command)
+        private Loop GetLoop (IASTNode operand)
+        {
+            if (operand.Type != ASTNodeType.Variable)
+                Croak("Must NEXT to a variable");
+
+            var loopVar = (ASTVariable)operand;
+            if (loopVar.IsString)
+                Croak("Cannot use a string as a loop counter");
+
+            var counter = loopVar.Name;
+            if (!loops.Keys.Contains(counter))
+                Croak($"That loop counter hasn't been defined (NEXT {counter})");
+
+            return loops[counter];
+        }
+
+        private string GetCodeForNext (IASTNode operand)
+        {
+            var lp = GetLoop(operand);
+            
+            var increment = $"{GetVarName(lp.Counter)} += {GetCodeForExpression(lp.Step)};\n";
+            var check = $"if ({GetCodeForExpression(lp.Condition, true)}) {{ skip{lp.Counter.Name}_bool = true; {GetCodeForGoto(lp.DefinedOnLine.ToString())} }}";
+            return $"{increment}{check}";
+        }
+
+        private string GetCodeForGoto (string lnNumber)
+        {
+            return $"lineNumber = {lnNumber};\n goto GosubStart;";
+        }
+
+        private string GetCodeForTopof (IASTNode operand)
+        {
+            var lp = GetLoop(operand);
+            return GetCodeForGoto(lp.DefinedOnLine.ToString());
+        }
+    
+        private string GetCodeForCommand(IASTNode command, float lineNumber)
         {
             /* This is either a command or a control structure */
             if (command.Type == ASTNodeType.Command)
@@ -60,7 +106,7 @@ namespace SuperBAS.Transpiler.CSharp
                     case "CLS":
                         return "Console.Clear();";
                     case "GOTO":
-                        return $"lineNumber = {GetCodeForExpression(cmd.Operand)};\n goto GosubStart;";
+                        return GetCodeForGoto(GetCodeForExpression(cmd.Operand));
                     case "GOSUB":
                         return $"Gosub({GetCodeForExpression(cmd.Operand)});";
                     case "RETURN":
@@ -71,6 +117,10 @@ namespace SuperBAS.Transpiler.CSharp
                         return GetCodeForAssignment(cmd, true);
                     case "ASSIGN":
                         return GetCodeForAssignment(cmd, false);
+                    case "NEXT":
+                        return GetCodeForNext(cmd.Operand);
+                    case "TOPOF":
+                        return GetCodeForTopof(cmd.Operand);
                     default:
                         Croak($"As-yet unsupported command \"{cmd.Command}\"");
                         break;
@@ -82,17 +132,51 @@ namespace SuperBAS.Transpiler.CSharp
                 var elseStr = "";
                 if (ifCmd.Else != null)
                 {
-                    elseStr += $" else {{ {GetCodeForCommand(ifCmd.Else)} }}";
+                    elseStr += $" else {{ {GetCodeForCommand(ifCmd.Else, lineNumber)} }}";
                 }
-                return $"if ({GetCodeForExpression(ifCmd.Condition, true)}) {{ {GetCodeForCommand(ifCmd.Then)} }} {elseStr}";
+                return $"if ({GetCodeForExpression(ifCmd.Condition, true)}) {{ {GetCodeForCommand(ifCmd.Then, lineNumber)} }} {elseStr}";
             }
             if (command.Type == ASTNodeType.For)
             {
                 var forLoop = (ASTFor)command;
+                var loopVar = (ASTVariable)forLoop.Assignment.Left;
+                // It's definitely a number so doesn't need the _number postfix
+                var counter = loopVar.Name;
 
+                DefineVar(VarType.Number, counter);
+                var skp = $"skip{counter}";
+                DefineVar(VarType.Bool, skp);
+                skp = $"{skp}_bool";
+
+                var startCount = forLoop.Assignment.Right;
+                var condition = new ASTBinary()
+                {
+                    Operator = "<=",
+                    Left = loopVar,
+                    Right = forLoop.ToMax
+                };
+                var loop = new Loop()
+                {
+                    Condition = condition,
+                    DefinedOnLine = lineNumber,
+                    Start = startCount,
+                    Step = forLoop.Step,
+                    Counter = loopVar
+                };
+                loops.Add(counter, loop);
+
+                // This is a starting loop line,
+                // if we transpile a NEXT call, it'll look up the loop and do the condition check
+                return $"if ({skp}) {skp} = false; else {GetVarName(loopVar)} = {GetCodeForExpression(startCount)};";
             }
 
             Croak("Unimplemented control structure.");
+            return "";
+        }
+
+        private string GetCodeForVarAssignment (IASTNode left)
+        {
+            // TODO
             return "";
         }
 
@@ -116,7 +200,68 @@ namespace SuperBAS.Transpiler.CSharp
             return $"{vr.Name}{(vr.IsString ? "_string" : "_number")}";
         }
 
-        // The meaning of the = operator changes from = to == in an if
+        public string GetCodeForNumber(string num)
+        {
+            string extra = "";
+            // Add a decimal so that 10 / 3 is 3.333... not 3
+            // (This makes number literals a 'double' type)
+            if (!num.Contains(".")) extra = ".0";
+            // extra = "m"; for accurate but 20x slower decimal type
+            return $"{num}{extra}";
+        }
+
+        // Returns true if the call is to a standard library function
+        private bool IsStdLib (ASTVariable funcName)
+        {
+            foreach (var std in LangUtils.StdLib)
+            {
+                if (
+                    funcName.Name == std.Name &&
+                    funcName.IsString == std.IsString)
+                    return true;
+            }
+            return false;
+        }
+
+        private string GetCodeForStdLib (ASTCall call)
+        {
+            var args = call.Arguments.Expressions;
+            var argCount = args.Length;
+            var fName = call.FunctionName.Name;
+
+            switch (fName)
+            {
+                case "STR":
+                    if (argCount != 1)
+                        Croak($"StdLib STR takes 1 argument, given {argCount}");
+                    return $"({GetCodeForExpression(args[0])}).ToString()";
+                case "VAL":
+                    if (argCount != 1)
+                        Croak($"StdLib VAL takes 1 argument, given {argCount}");
+                    return $"double.Parse({GetCodeForExpression(args[0])})";
+                case "LEN":
+                    // TODO: Use count if the arg is a list
+                    if (argCount != 1)
+                        Croak($"StdLib LEN takes 1 argument, given {argCount}");
+                    return $"({GetCodeForExpression(args[0])}).Length";
+                default:
+                    return $"The C# transpiler does not yet support StdLib function {fName}";
+            }
+        }
+
+        private string GetCodeForCall (ASTCall call)
+        {
+            if (IsStdLib(call.FunctionName))
+            {
+                return GetCodeForStdLib(call);
+            }
+            else
+            {
+                Croak("User functions and arrays are not implemented.");
+                return "";
+            }
+        }
+
         private string GetCodeForExpression (IASTNode expression, bool inIf = false)
         {
             switch (expression.Type)
@@ -125,24 +270,24 @@ namespace SuperBAS.Transpiler.CSharp
                     return $"\"{((ASTString)expression).Value}\"";
                 case ASTNodeType.Number:
                     var num = ((ASTNumber)expression).Value.ToString();
-                    string extra = "";
-                    // Add a decimal so that 10 / 3 is 3.333... not 3
-                    // (This makes number literals a 'double' type)
-                    if (!num.Contains(".")) extra = ".0";
-                    // extra = "m"; for accurate but 20x slower decimal type
-                    return $"{num}{extra}";
+                    return GetCodeForNumber(num);
                 case ASTNodeType.Variable:
                     var vr = (ASTVariable)expression;
                     return GetVarName(vr);
                 case ASTNodeType.Binary:
                     var bin = ((ASTBinary)expression);
                     return $"({GetCodeForExpression(bin.Left)} {GetCodeForOperator(bin.Operator, inIf)} {GetCodeForExpression(bin.Right)})";
+                case ASTNodeType.Call:
+                    // These are complicated. They can mean array adressing,
+                    // stdLib calls or user function calls
+                    return GetCodeForCall((ASTCall)expression);
             }
 
-            Croak("Unimplemented ASTNodeType in expression (likely ASTCall).");
+            Croak("Unimplemented ASTNodeType in expression (likely an illegal expression type).");
             return "";
         }
 
+        // The meaning of the = operator changes from = to == in an if
         private string GetCodeForOperator (string op, bool inIf)
         {
             if (inIf && op == "=") return "==";

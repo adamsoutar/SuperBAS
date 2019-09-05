@@ -84,7 +84,7 @@ namespace SuperBAS.Parser
 
         private bool IsControlStructure (IASTNode node)
         {
-            return node.Type == ASTNodeType.If;
+            return node.Type == ASTNodeType.If || node.Type == ASTNodeType.For;
         }
 
         private IASTNode ParseCommand ()
@@ -175,10 +175,23 @@ namespace SuperBAS.Parser
             if (token.Type == TokenType.Keyword && token.Value == "FOR")
             {
                 // Loooops
-                var loop = new ASTFor()
-                {
-                    Assignment = ParseExpression()
-                };
+                var loop = new ASTFor();
+                var assign = ParseExpression();
+
+                // Checks
+                if (assign.Type != ASTNodeType.Binary)
+                    Croak("Expected a binary expression after FOR");
+                var assignBin = (ASTBinary)assign;
+                if (assignBin.Operator != "=")
+                    Croak($"Expected assignment, got operator {assignBin.Operator}");
+                if (assignBin.Left.Type != ASTNodeType.Variable)
+                    Croak("Loop counter must be a variable.");
+                var assignLeft = (ASTVariable)assignBin.Left;
+                if (assignLeft.IsString)
+                    Croak("Loop counter cannot be a string.");
+
+                loop.Assignment = assignBin;
+
                 ExpectKeyword("TO");
                 loop.ToMax = ParseExpression();
 
@@ -264,6 +277,12 @@ namespace SuperBAS.Parser
                 if (theirPrecedence > myPrecedence)
                 {
                     tokenStream.Read();
+
+                    if (op.Value == "=" &&
+                        !(left.Type == ASTNodeType.Variable ||
+                          left.Type == ASTNodeType.Call))
+                        Croak("Can only assign to variable or array.");
+
                     return MightBeBinary(new ASTBinary()
                     {
                         Operator = op.Value,

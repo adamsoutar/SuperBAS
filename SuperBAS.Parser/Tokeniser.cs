@@ -131,7 +131,7 @@ namespace SuperBAS.Parser
             if (TokeniserUtils.IsPunctuation(ch)) return TokenFromNextChar(TokenType.Punctuation);
             if (TokeniserUtils.IsOperator(ch)) return TokenFromNextChar(TokenType.Operator);
 
-            Croak($"Unexpected character");
+            Croak($"Unexpected character {ch}");
             return null;
         }
     }
