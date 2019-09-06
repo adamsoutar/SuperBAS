@@ -27,7 +27,8 @@ namespace SuperBAS.Parser
         public static string[] Commands =
         {
             "PRINT", "IF", "LET", "GOTO", "GOSUB", "RETURN", "CLS", "FOR", "NEXT",
-            "TOPOF", "DIM", "LIST", "LISTADD", "LISTRM", "PRINTAT", "INK", "PAPER"
+            "TOPOF", "DIM", "LIST", "LISTADD", "LISTRM", "PRINTAT", "INK", "PAPER",
+            "SLEEP"
         };
         public static ASTVariable[] StdLib =
         {
@@ -67,6 +68,11 @@ namespace SuperBAS.Parser
             new ASTVariable()
             {
                 Name = "CEIL",
+                IsString = false
+            },
+            new ASTVariable()
+            {
+                Name = "ROUND",
                 IsString = false
             }
         };

@@ -377,6 +377,11 @@ namespace SuperBAS.Transpiler.CSharp
                     return $"Math.Floor({cd})";
                 case "CEIL":
                     return $"Math.Ceiling({cd})";
+                case "ROUND":
+                    var dps = "0";
+                    if (args.Length > 1)
+                        dps = GetCodeForExpression(args[1]);
+                    return $"Math.Round({cd}, {dps})";
                 case "LEN":
                     var end = "Length";
 

@@ -37,8 +37,8 @@ namespace SuperBAS.Parser
     {
         public ASTNodeType Type { get => ASTNodeType.If; }
         public IASTNode Condition;
-        public ASTCommand Then;
-        public ASTCommand Else;
+        public IASTNode Then;
+        public IASTNode Else;
     }
 
     public class ASTKeyword : IASTNode

@@ -174,23 +174,19 @@ namespace SuperBAS.Parser
                 var condition = ParseExpression();
                 ExpectKeyword("THEN");
                 var then = ParseCommand();
-                if (then.Type != ASTNodeType.Command)
-                {
-                    Croak("Expected command after THEN");
-                }
+
                 // Optional else
-                ASTCommand elseStatement = null;
+                IASTNode elseStatement = null;
                 if (IsNextKeyword("ELSE"))
                 {
+                    tokenStream.Read();
                     var elseRaw = ParseCommand();
-                    if (elseRaw.Type != ASTNodeType.Command)
-                        Croak("Expected command after ELSE");
-                    elseStatement = (ASTCommand)elseRaw;
+                    elseStatement = elseRaw;
                 }
                 return new ASTIf()
                 {
                     Condition = condition,
-                    Then = (ASTCommand)then,
+                    Then = then,
                     Else = elseStatement
                 };
             }

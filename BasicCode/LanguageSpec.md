@@ -36,17 +36,71 @@ Return the program to the line after the latest GOSUB - If no GOSUB has been cal
 
 #### LET
 
-Assign a variable. If used on an array/list call, assign to the variable at that index.
+Assign a variable.
 
 `LET x = 10`
 
 `LET name$ = "Adam"`
 
-`LET myMap(10, 5) = x`
+#### DIM
+
+Create an n-dimensional array. Call parameters indicate how many items there are in that dimension of the array.
+
+`DIM names$(3)`
+
+*Note:* names$ will have 3 items: 0, 1 and 2.
+
+`DIM map(10, 10)`
+
+`DIM fourDVector(20, 10, 30, 15)`
+
+#### LIST
+
+Creates a list. Lists are like arrays but do not have a fixed size. For manipulating them, see `LISTADD` and `LISTRM`. List indices begin at 0 and end at the length - 1. Eg, a list that is 3 items long has indices 0, 1 and 2.
+
+`LIST myList`
+
+`LIST names$`
+
+#### LISTADD
+
+Add an item to the end of the specified list.
+
+`LISTADD names$, "Adam"`
+
+`LISTADD myList, 3.5`
+
+#### LISTRM
+
+Remove the item at the specified index.
+
+`LISTRM names$, 0` - Removes the first (left-most) item of names$
+
+`LISTRM myList, LEN(myList) - 1` - Removes the last (right-most) item of myList
+
+#### INK
+
+Change the colour of the console's foreground text. See "Console colours appendix" for the colour values.
+
+`INK 7`
+
+`INK x`
+
+#### PAPER
+
+Usage is the same as INK, but changes the background colour. Initially only change the colour for printing "from now on". To change the entire background, call PAPER, then CLS.
+
+#### INPUT
+
+Takes input from the console and assigns it to a variable. Optionally presents a prompt.
+
+`INPUT myString$`
+
+`INPUT "What's your name?", name$`
 
 #### =
 
-Perform an assignment to an **already defined** variable - not technically a command, but treated as such.
+Perform an assignment to an **already defined** variable - not technically a command, but treated as such. Use with array index calls to set the variable at that index.
 
 `x = 5`
 
@@ -102,11 +156,123 @@ Where x and y are user functions, if x() is 10, then y is **not called** (likewi
 
 When used in IF statement conditions, `=` is not an assignment but a comparator.
 
+#### SLEEP
+
+Pause the program for the amount of milliseconds passed to this command
+
+`SLEEP 1000` - Sleeps for 1 sec
+
+`SLEEP x`
+
+#### PRINTAT
+
+Print the passed string at a location on the screen
+
+`PRINTAT 5, 5, "Hello"`
+
+`PRINTAT x, y, string$`
+
+### Console colours
+
+The following colour IDs are used by `INK` and `PAPER`:
+
+Also see [here](https://docs.microsoft.com/en-us/dotnet/api/system.consolecolor?view=netcore-2.2)
+
+ 0. Black
+ 1. Dark Blue
+ 2. Dark Green
+ 3. Dark Cyan
+ 4. Dark Red
+ 5. Dark Magenta
+ 6. Dark Yellow
+ 7. Grey
+ 8. Dark Grey
+ 9. Blue
+ 10. Green
+ 11. Cyan
+ 12. Red
+ 13. Magenta
+ 14. Yellow
+ 15. White
+
+```
+1 FOR i = 0 TO 15
+2 INK i
+3 PRINT "Multicolours!"
+4 NEXT i
+```
+
 ## Standard library
 
 The standard library are built in functions such as ABS and SIN
 
-**As yet, none of these are implemented**
+#### STR$
+
+Converts a number into a string
+
+```
+1 LET x = 10
+2 PRINT "x is " + STR$(x)
+```
+
+#### VAL
+
+Converts a string into a number
+
+```
+1 LET mystr$ = "2"
+2 PRINT VAL(mystr$) * 2
+```
+
+#### LEN
+
+Gets the length of a string, list or array.
+If used on a multi-dimensional array, returns the area/volume of the grid. ie. the LEN of myMap(5, 3, 2) returns 30 (5 * 3 * 2)
+
+```
+1 DIM a(5)
+2 LIST b
+3 LET c$ = "Hello"
+5 PRINT LEN(a) + LEN(b) + LEN(c$)
+```
+
+The program above prints 10
+
+#### SIN
+
+Returns the sine of the first parameter **in radians**
+
+#### COS
+
+Returns the cosine of the first parameter **in radians**
+
+#### TAN
+
+Returns the tangent of the first parameter **in radians**
+
+#### FLOOR
+
+Returns the lowest integer before the decimal passed as the parameter, ie. cuts off the decimal point.
+
+`FLOOR(3.9) = 3`
+
+#### CEIL
+
+Returns the smallest integer after the number passed as the parameter. ie. Round up.
+
+`CEIL(3.1) = 4`
+
+#### ROUND
+
+Rounds the number to the closest integer. If passed a second argument, that is the amount of decimal points to round to.
+
+`ROUND(4.4) = 4`
+
+`ROUND(4.5) = 5`
+
+`ROUND(4.46, 1) = 4.5`
+
+See [this question](https://stackoverflow.com/questions/311696/why-does-net-use-bankers-rounding-as-default) and [C#'s documentation](https://docs.microsoft.com/en-us/dotnet/api/system.math.round?view=netcore-2.2#System_Math_Round_System_Double_) for details like why `ROUND(4.45, 1) = 4.4`
 
 ## Keywords
 
