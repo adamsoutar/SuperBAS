@@ -117,6 +117,29 @@ namespace SuperBAS.Parser
                 } else
                 {
                     operand = ParseExpression();
+                    if (IsNextPunctuation(","))
+                    {
+                        // A tupple command like
+                        // LISTADD myList$, "Hello"
+                        tokenStream.Read();
+
+                        var lst = new List<IASTNode>();
+                        lst.Add(operand);
+
+                        while (true)
+                        {
+                            lst.Add(ParseExpression());
+                            if (IsNextPunctuation(","))
+                            {
+                                tokenStream.Read();
+                            } else break;
+                        }
+
+                        operand = new ASTCompoundExpression()
+                        {
+                            Expressions = lst.ToArray()
+                        };
+                    }
                 }
                 return new ASTCommand()
                 {
@@ -252,7 +275,9 @@ namespace SuperBAS.Parser
 
         private IASTNode ParseExpression ()
         {
-            return MightBeCall(MightBeBinary(ParseAtom(), 0));
+            // TODO: Check these are right, they used to be reversed
+            // but caused a bug with array indexing
+            return MightBeBinary(MightBeCall(ParseAtom()), 0);
         }
 
         private IASTNode MightBeCall (IASTNode node)

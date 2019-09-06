@@ -18,12 +18,16 @@ namespace SuperBAS.Transpiler.CSharp
     public class TemplateCode
     {
         private Action<VarType, string> DefineVar;
+        // For complex, operand dependent declarations like maps
+        private Action<string> DefineRaw;
         public List<float> LineNumbers = new List<float>();
         public Dictionary<string, Loop> loops = new Dictionary<string, Loop>();
+        public List<string> DefinedLists = new List<string>();
 
-        public TemplateCode(Action<VarType, string> Define)
+        public TemplateCode(Action<VarType, string> Define, Action<string> Raw)
         {
             DefineVar = Define;
+            DefineRaw = Raw;
         }
 
         public string GetCodeForProgram(SyntaxTreeTopLevel[] lines)
@@ -43,12 +47,15 @@ namespace SuperBAS.Transpiler.CSharp
         {
             LineNumbers.Add(line.LineNumber);
             string code = $"case {line.LineNumber}:\n";
+            string linesCode = "";
             foreach (var command in line.Commands)
             {
                 // TODO: Handle multi-statement ifs?
-                code += GetCodeForCommand(command, line.LineNumber) + "\n";
+                linesCode += GetCodeForCommand(command, line.LineNumber) + "\n";
             }
-            code += $"goto case {nextLine};\n";
+            // Some lines might not generate code
+            if (linesCode == "") return linesCode;
+            code += $"{linesCode}goto case {nextLine};\n";
             return code;
         }
 
@@ -92,6 +99,94 @@ namespace SuperBAS.Transpiler.CSharp
             var lp = GetLoop(operand);
             return GetCodeForGoto(lp.DefinedOnLine.ToString());
         }
+
+        private string GetCodeForDim (IASTNode operand)
+        {
+            if (operand.Type != ASTNodeType.Call)
+                Croak("Dim must be followed by a call, eg. DIM words(3)");
+
+            var cl = (ASTCall)operand;
+            if (IsStdLib(cl.FunctionName))
+                Croak("Attempt to DIM a name from the standard library");
+
+            var varName = GetVarName(cl.FunctionName);
+            var args = cl.Arguments.Expressions;
+            var dimensions = args.Length;
+            var commas = "";
+            for (int i = 0; i < dimensions - 1; i++) commas += ",";
+
+            var arType = cl.FunctionName.IsString ? "string" : "double";
+            var arCode = $"{arType}[{commas}]";
+
+            DefineRaw($"private static {arCode} {varName};");
+
+            var arDef = $"{arType}[";
+            for (int i = 0; i < args.Length; i++)
+                // Cast the dimensions
+                // The cast is silent for something like DIM X(5.5, 3.2) - TODO Warn
+                arDef += $"(int)({GetCodeForExpression(args[i])})" + (i == args.Length - 1 ? "" : ",");
+            arDef += ']';
+
+            return $"{varName} = new {arDef};";
+        }
+
+        private string GetCodeForList (IASTNode operand)
+        {
+            if (operand.Type != ASTNodeType.Variable)
+                Croak("You should pass LIST a variable name to define");
+
+            var vr = (ASTVariable)operand;
+            var nm = GetVarName(vr);
+            DefinedLists.Add(nm);
+            var listType = vr.IsString ? "string" : "double";
+            DefineRaw($"private static List<{listType}> {nm};");
+
+            return $"{nm} = new List<{listType}>();";
+        }
+
+        private string GetCodeForListAdd (IASTNode operand)
+        {
+            if (operand.Type != ASTNodeType.CompoundExpression)
+                Croak("LISTADD is a tupple command (see spec)");
+
+            var args = ((ASTCompoundExpression)operand).Expressions;
+            if (args[0].Type != ASTNodeType.Variable)
+                Croak("LISTADD's first argument should be a list variable");
+
+            var nm = GetVarName((ASTVariable)args[0]);
+            if (!DefinedLists.Contains(nm))
+                Croak($"Attempt to add to undefined list {nm}");
+
+            return $"{nm}.Add({GetCodeForExpression(args[1])});";
+        }
+
+        private string GetCodeForListRm (IASTNode operand)
+        {
+            if (operand.Type != ASTNodeType.CompoundExpression)
+                Croak("LISTRM is a tupple command (see spec)");
+
+            var args = ((ASTCompoundExpression)operand).Expressions;
+            // TODO: This is exteremely similar to ListAdd, I WANT US TO MERGE
+            if (args[0].Type != ASTNodeType.Variable)
+                Croak("LISTRM's first argument should be a list variable");
+
+            var nm = GetVarName((ASTVariable)args[0]);
+            if (!DefinedLists.Contains(nm))
+                Croak($"Attempt to remove from undefined list {nm}");
+
+            return $"{nm}.RemoveAt((int)({GetCodeForExpression(args[1])}));";
+        }
+
+        private string GetCodeForPrintAt (IASTNode op)
+        {
+            if (op.Type != ASTNodeType.CompoundExpression)
+                Croak("PRINTAT is a tupple command (see spec)");
+
+            var args = ((ASTCompoundExpression)op).Expressions;
+            // PrintAt depends on runtime variables
+            // And so is implemented in Templace.cs.txt
+            return $"PrintAt({GetCodeForExpression(args[0])}, {GetCodeForExpression(args[1])}, {GetCodeForExpression(args[2])});";
+        }
     
         private string GetCodeForCommand(IASTNode command, float lineNumber)
         {
@@ -121,6 +216,25 @@ namespace SuperBAS.Transpiler.CSharp
                         return GetCodeForNext(cmd.Operand);
                     case "TOPOF":
                         return GetCodeForTopof(cmd.Operand);
+                    case "DIM":
+                        return GetCodeForDim(cmd.Operand);
+                    case "LISTADD":
+                        return GetCodeForListAdd(cmd.Operand);
+                    case "LISTRM":
+                        return GetCodeForListRm(cmd.Operand);
+                    case "LIST":
+                        return GetCodeForList(cmd.Operand);
+                    case "PRINTAT":
+                        return GetCodeForPrintAt(cmd.Operand);
+                    case "INK":
+                        return $"Console.ForegroundColor = (ConsoleColor)({GetCodeForExpression(cmd.Operand)});";
+                    case "PAPER":
+                        return $"Console.BackgroundColor = (ConsoleColor)({GetCodeForExpression(cmd.Operand)});";
+                    case "EXIT":
+                        // TODO: Give the option to supply an exit code?
+                        return "Environment.Exit(0);";
+                    case "STOP":
+                        return "Console.ReadKey(); Environment.Exit(0);";
                     default:
                         Croak($"As-yet unsupported command \"{cmd.Command}\"");
                         break;
@@ -174,22 +288,39 @@ namespace SuperBAS.Transpiler.CSharp
             return "";
         }
 
+        // Allows assigning to, say, myArray[3, 4]
+        // as well as x
         private string GetCodeForVarAssignment (IASTNode left)
         {
-            // TODO
-            return "";
+            if (left.Type == ASTNodeType.Variable)
+            {
+                var vr = (ASTVariable)left;
+                return GetVarName(vr);
+            }
+            else
+            {
+                if (left.Type != ASTNodeType.Call)
+                    Croak("What? You can't assign to that.\nWhat did you even do? 3 = 4??");
+                var cl = (ASTCall)left;
+                if (IsStdLib(cl.FunctionName))
+                    Croak("Can't assign to the standard library.");
+                //TODO: Check we aren't assigning to a user function
+                return GetCodeForCall(cl);
+            }
         }
 
         private string GetCodeForAssignment(ASTCommand cmd, bool define)
         {
             var oper = (ASTBinary)cmd.Operand;
-            // TODO: Let arrays
-            if (oper.Left.Type != ASTNodeType.Variable)
-                Croak("Right now, you can only assign to variable names, no arrays yet.");
-            var vr = ((ASTVariable)oper.Left);
             if (define)
+            {
+                // LET
+                if (oper.Left.Type != ASTNodeType.Variable)
+                    Croak("You can only LET variables. Note: You don't need LET for array items.");
+                var vr = (ASTVariable)oper.Left;
                 DefineVar(vr.IsString ? VarType.String : VarType.Number, vr.Name);
-            return $"{GetVarName(vr)} = {GetCodeForExpression(oper.Right)};";
+            }
+            return $"{GetCodeForVarAssignment(oper.Left)} = {GetCodeForExpression(oper.Right)};";
         }
 
         public string GetVarName(ASTVariable vr)
@@ -229,21 +360,35 @@ namespace SuperBAS.Transpiler.CSharp
             var argCount = args.Length;
             var fName = call.FunctionName.Name;
 
+            var cd = GetCodeForExpression(args[0]);
             switch (fName)
             {
                 case "STR":
-                    if (argCount != 1)
-                        Croak($"StdLib STR takes 1 argument, given {argCount}");
-                    return $"({GetCodeForExpression(args[0])}).ToString()";
+                    return $"({cd}).ToString()";
                 case "VAL":
-                    if (argCount != 1)
-                        Croak($"StdLib VAL takes 1 argument, given {argCount}");
-                    return $"double.Parse({GetCodeForExpression(args[0])})";
+                    return $"double.Parse({cd})";
+                case "SIN":
+                    return $"Math.Sin({cd})";
+                case "COS":
+                    return $"Math.Cos({cd})";
+                case "TAN":
+                    return $"Math.Tan({cd})";
+                case "FLOOR":
+                    return $"Math.Floor({cd})";
+                case "CEIL":
+                    return $"Math.Ceiling({cd})";
                 case "LEN":
-                    // TODO: Use count if the arg is a list
-                    if (argCount != 1)
-                        Croak($"StdLib LEN takes 1 argument, given {argCount}");
-                    return $"({GetCodeForExpression(args[0])}).Length";
+                    var end = "Length";
+
+                    // Switch to Count for lists, they don't have a Length
+                    if (args[0].Type == ASTNodeType.Variable)
+                    {
+                        var vr = (ASTVariable)args[0];
+                        if (DefinedLists.Contains(GetVarName(vr)))
+                            end = "Count";
+                    }
+
+                    return $"({cd}).{end}";
                 default:
                     return $"The C# transpiler does not yet support StdLib function {fName}";
             }
@@ -257,8 +402,18 @@ namespace SuperBAS.Transpiler.CSharp
             }
             else
             {
-                Croak("User functions and arrays are not implemented.");
-                return "";
+                // TODO: User functions
+                var arName = GetVarName(call.FunctionName);
+                var assignCode = $"{arName}[";
+
+                var args = call.Arguments.Expressions;
+                for (int i = 0; i < args.Length; i++)
+                {
+                    assignCode += $"(int)({GetCodeForExpression(args[i])})" +
+                        (i == args.Length - 1 ? "" : ",");
+                }
+
+                return assignCode + ']';
             }
         }
 

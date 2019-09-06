@@ -1,0 +1,7 @@
+0.1 INK 4
+0.2 PAPER 1
+0.3 CLS
+0.5 PRINT "Test1"
+1 PRINTAT 4, 4, "Hello"
+2 PRINTAT 5, 5, "World"
+3 PRINT "Test2"

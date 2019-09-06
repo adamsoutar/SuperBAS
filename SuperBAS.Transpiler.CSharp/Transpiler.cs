@@ -19,6 +19,7 @@ namespace SuperBAS.Transpiler.CSharp
         private List<string> numbers = new List<string>();
         private List<string> bools = new List<string>();
         private TemplateCode templater;
+        private string varDecs = "";
 
 
         private void DefineVar (VarType type, string name)
@@ -43,6 +44,10 @@ namespace SuperBAS.Transpiler.CSharp
                     break;
             }
         }
+        private void DefineRaw (string cSharpCode)
+        {
+            varDecs += cSharpCode + '\n';
+        }
 
         public static void Croak (string msg)
         {
@@ -56,7 +61,7 @@ namespace SuperBAS.Transpiler.CSharp
             skeleton = sR.ReadToEnd();
             sR.Close();
 
-            templater = new TemplateCode(DefineVar);
+            templater = new TemplateCode(DefineVar, DefineRaw);
 
             string finalProgram = skeleton;
             finalProgram = finalProgram.Replace("/*CASES*/",
@@ -77,7 +82,7 @@ namespace SuperBAS.Transpiler.CSharp
 
         private string GetDeclarations ()
         {
-            string final = "";
+            string final = varDecs;
             foreach (var str in strings)
                 final += $"static string {str}_string = \"\";\n";
             foreach (var num in numbers)
