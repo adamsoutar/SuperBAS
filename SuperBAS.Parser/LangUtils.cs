@@ -28,7 +28,7 @@ namespace SuperBAS.Parser
         {
             "PRINT", "IF", "LET", "GOTO", "GOSUB", "RETURN", "CLS", "FOR", "NEXT",
             "TOPOF", "DIM", "LIST", "LISTADD", "LISTRM", "PRINTAT", "INK", "PAPER",
-            "SLEEP"
+            "SLEEP", "WAITKEY", "EXIT", "STOP", "INPUT"
         };
         public static ASTVariable[] StdLib =
         {
@@ -74,12 +74,21 @@ namespace SuperBAS.Parser
             {
                 Name = "ROUND",
                 IsString = false
+            },
+            new ASTVariable()
+            {
+                Name = "RANDOM",
+                IsString = false
             }
         };
+        public static string[] CompilerKeywords =
+        {
+            "INCLUDE"
+        };
         // Reserved words, some of which are not commands
-        public static string[] Keywords = Commands.Concat(new string[]
+        public static string[] Keywords = CompilerKeywords.Concat(Commands.Concat(new string[]
         {
             "THEN", "ELSE", "TO", "STEP"
-        }).ToArray();
+        })).ToArray();
     }
 }

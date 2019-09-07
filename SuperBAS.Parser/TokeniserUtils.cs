@@ -7,7 +7,7 @@ namespace SuperBAS.Parser
     {
         private static char[] whitespace = "\t ".ToCharArray();
         // New lines are significant, they're punctuation not whitespace
-        private static char[] punctuation = ":$,()\n".ToCharArray();
+        private static char[] punctuation = ":$#,()\n".ToCharArray();
         // Includes . for 3.14, there's no
         // properties in BASIC, so any time we see
         // a . it's safe to assume a number, ie .5, .2

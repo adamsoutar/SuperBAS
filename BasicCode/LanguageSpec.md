@@ -14,6 +14,25 @@ Logs the operand (string or number) to STDOUT
 
 Clears the console (no operand)
 
+#### WAITKEY
+
+Wait for a keypress before resuming the program
+
+#### EXIT
+
+Quit the program immediately
+
+#### STOP
+
+Quit the program after waiting for a keypress
+
+Equivalent of:
+
+```
+1 WAITKEY
+2 EXIT
+```
+
 #### GOTO
 
 Jumps program to the operand as a line number. Operand can be an expression based on user input and does not have to be a compile-time constant!

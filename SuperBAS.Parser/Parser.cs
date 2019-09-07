@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SuperBAS.Parser
 {
@@ -50,8 +51,27 @@ namespace SuperBAS.Parser
         public SyntaxTreeTopLevel[] GenerateAbstractSyntaxTree ()
         {
             var nodes = new List<SyntaxTreeTopLevel>();
+
             while (!tokenStream.EndOfStream)
             {
+                if (IsNextPunctuation("#"))
+                {
+                    tokenStream.Read();
+                    ExpectKeyword("INCLUDE");
+
+                    var path = (Token)tokenStream.Read();
+                    if (path.Type != TokenType.String)
+                        Croak("Include must be a compile-time constant string.");
+
+                    Console.WriteLine($"[info] Including {path.Value}");
+
+                    var newFileParser = Parser.FromFile(path.Value);
+                    foreach (var ast in newFileParser.GenerateAbstractSyntaxTree())
+                        nodes.Add(ast);
+
+                    continue;
+                }
+
                 var node = new SyntaxTreeTopLevel();
                 node.Commands = new List<IASTNode>();
 
@@ -60,6 +80,7 @@ namespace SuperBAS.Parser
                 {
                     Croak("Lines must start with a line number.");
                 }
+
                 node.LineNumber = ((ASTNumber)lineNumber).Value;
 
                 while (true)
@@ -79,7 +100,18 @@ namespace SuperBAS.Parser
                 // Enforce newlines after commands
                 if (!tokenStream.EndOfStream) ExpectPunctuation("\n");
             }
-            return nodes.ToArray();
+
+            // Sort program
+            var nodeArr = nodes.OrderBy(n => n.LineNumber).ToArray();
+
+            if (
+                 nodeArr.Select(x => x.LineNumber).Distinct().Count() != nodeArr.Count()
+               )
+            {
+                Croak("Duplicate line number defined");
+            }
+
+            return nodeArr;
         }
 
         private bool IsControlStructure (IASTNode node)

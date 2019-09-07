@@ -13,14 +13,13 @@ namespace SuperBAS.Transpiler.CSharp
 
     public class Transpiler
     {
-        private string skeleton = "";
         private Parser.Parser parser;
         private List<string> strings = new List<string>();
         private List<string> numbers = new List<string>();
         private List<string> bools = new List<string>();
         private TemplateCode templater;
         private string varDecs = "";
-
+        public string FinalProgram;
 
         private void DefineVar (VarType type, string name)
         {
@@ -57,27 +56,26 @@ namespace SuperBAS.Transpiler.CSharp
         public Transpiler (string file)
         {
             parser = Parser.Parser.FromFile(file);
-            var sR = new StreamReader("./Template.cs.txt");
-            skeleton = sR.ReadToEnd();
-            sR.Close();
+            FinalProgram = Skeleton.Code;
 
             templater = new TemplateCode(DefineVar, DefineRaw);
 
-            string finalProgram = skeleton;
-            finalProgram = finalProgram.Replace("/*CASES*/",
+            FinalProgram = FinalProgram.Replace("/*CASES*/",
                 templater.GetCodeForProgram(
                     parser.GenerateAbstractSyntaxTree()
                     )
                 );
-            finalProgram = finalProgram.Replace("/*DECLARATIONS*/",
+            FinalProgram = FinalProgram.Replace("/*DECLARATIONS*/",
                 GetDeclarations()
                 );
-            finalProgram = finalProgram.Replace("/*LOWESTLINE*/", templater.LineNumbers[0].ToString());
+            FinalProgram = FinalProgram.Replace("/*LOWESTLINE*/", templater.LineNumbers[0].ToString());
+        }
 
+        public void SaveTo(string path)
+        {
             var sW = new StreamWriter("./Program.cs");
-            sW.Write(finalProgram);
+            sW.Write(FinalProgram);
             sW.Close();
-            Console.WriteLine(finalProgram);
         }
 
         private string GetDeclarations ()

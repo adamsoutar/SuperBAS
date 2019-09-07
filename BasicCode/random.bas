@@ -1,0 +1,2 @@
+1 LET x = FLOOR(RANDOM() * 4)
+2 PRINT x

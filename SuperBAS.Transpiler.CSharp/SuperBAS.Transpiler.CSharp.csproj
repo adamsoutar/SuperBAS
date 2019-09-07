@@ -8,8 +8,6 @@
     <ProjectReference Include="..\SuperBAS.Parser\SuperBAS.Parser.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Template.cs.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Remove="Template.cs.txt" />
   </ItemGroup>
 </Project>

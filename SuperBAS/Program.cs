@@ -9,10 +9,21 @@ namespace SuperBAS
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Name of a file in the BasicCode dir:");
-            string file = $"../../../../BasicCode/{Console.ReadLine()}.bas";
+            string file = "";
+            string output = "./Program.cs";
+
+            if (args.Length == 0)
+            {
+                // Use last program
+            }
+            else file = args[0];
+
+            if (args.Length > 1)
+                output = args[1];
+            else Console.WriteLine("[warn] No output filename provided, using Program.cs");
 
             var Transpiler = new Transpiler.CSharp.Transpiler(file);
+            Transpiler.SaveTo(output);
         }
     }
 }

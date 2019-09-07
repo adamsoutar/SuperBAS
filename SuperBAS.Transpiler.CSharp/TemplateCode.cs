@@ -187,7 +187,24 @@ namespace SuperBAS.Transpiler.CSharp
             // And so is implemented in Templace.cs.txt
             return $"PrintAt({GetCodeForExpression(args[0])}, {GetCodeForExpression(args[1])}, {GetCodeForExpression(args[2])});";
         }
-    
+
+        private string GetCodeForInput(IASTNode operand)
+        {
+            var outCode = "";
+            ASTVariable target;
+
+            if (operand.Type == ASTNodeType.CompoundExpression)
+            {
+                var args = ((ASTCompoundExpression)operand).Expressions;
+                target = (ASTVariable)args[1];
+
+                outCode += $"Console.WriteLine({GetCodeForExpression(args[0])});\n";
+            }
+            else target = (ASTVariable)operand;
+
+            return outCode + $"{GetVarName(target)} = Console.ReadLine();";
+        }
+
         private string GetCodeForCommand(IASTNode command, float lineNumber)
         {
             /* This is either a command or a control structure */
@@ -235,6 +252,10 @@ namespace SuperBAS.Transpiler.CSharp
                         return "Environment.Exit(0);";
                     case "STOP":
                         return "Console.ReadKey(); Environment.Exit(0);";
+                    case "WAITKEY":
+                        return "Console.ReadKey();";
+                    case "INPUT":
+                        return GetCodeForInput(cmd.Operand);
                     default:
                         Croak($"As-yet unsupported command \"{cmd.Command}\"");
                         break;
@@ -377,6 +398,8 @@ namespace SuperBAS.Transpiler.CSharp
                     return $"Math.Floor({cd})";
                 case "CEIL":
                     return $"Math.Ceiling({cd})";
+                case "RANDOM":
+                    return "rand.NextDouble()";
                 case "ROUND":
                     var dps = "0";
                     if (args.Length > 1)
