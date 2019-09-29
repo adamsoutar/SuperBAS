@@ -73,7 +73,7 @@ namespace SuperBAS.Transpiler.CSharp
 
         public void SaveTo(string path)
         {
-            var sW = new StreamWriter("./Program.cs");
+            var sW = new StreamWriter(path);
             sW.Write(FinalProgram);
             sW.Close();
         }

@@ -16,6 +16,7 @@ namespace SuperBAS.Parser
     public class Parser
     {
         private Tokeniser tokenStream;
+        public string SourcePath { get => tokenStream.SourcePath; }
 
         public Parser (Tokeniser tokeniser)
         {
@@ -65,7 +66,9 @@ namespace SuperBAS.Parser
 
                     Console.WriteLine($"[info] Including {path.Value}");
 
-                    var newFileParser = Parser.FromFile(path.Value);
+                    // Include paths are relative to the original source
+                    var includePath = Path.Combine(Path.GetDirectoryName(SourcePath), path.Value);
+                    var newFileParser = Parser.FromFile(includePath);
                     foreach (var ast in newFileParser.GenerateAbstractSyntaxTree())
                         nodes.Add(ast);
 
@@ -74,6 +77,13 @@ namespace SuperBAS.Parser
 
                 var node = new SyntaxTreeTopLevel();
                 node.Commands = new List<IASTNode>();
+
+                // Ignore blank newlines
+                if (IsNextPunctuation("\n"))
+                {
+                    tokenStream.Read();
+                    continue;
+                }
 
                 var lineNumber = ParseExpression();
                 if (lineNumber.Type != ASTNodeType.Number)
@@ -297,7 +307,10 @@ namespace SuperBAS.Parser
                 };
             }
 
-            Croak($"Unexpected token {token.Value}");
+            if (token.Value == "\n")
+                Croak("Unexpected newline");
+            else
+                Croak($"Unexpected token \"{token.Value}\"");
             return new ASTInvalidNode();
         }
 

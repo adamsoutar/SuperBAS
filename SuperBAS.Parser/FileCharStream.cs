@@ -6,18 +6,20 @@ namespace SuperBAS.Parser
     public class FileCharStream : ICharStream
     {
         private StreamReader streamReader;
+        public string SourcePath { get; }
         public bool EndOfStream { get => streamReader.EndOfStream; }
         private uint col;
         private uint line;
         private string lineSoFar;
 
-        public FileCharStream(StreamReader stream)
+        public FileCharStream(StreamReader stream, string sourcePath)
         {
             streamReader = stream;
+            SourcePath = sourcePath;
         }
         public static FileCharStream FromFile (string path)
         {
-            return new FileCharStream(new StreamReader(path));
+            return new FileCharStream(new StreamReader(path), path);
         }
 
         public char Peek ()
@@ -60,7 +62,7 @@ namespace SuperBAS.Parser
              * 10 PRINT !HELLO"
              *          ^
              */
-            throw new Exception($"{source} croaked: {msg}\n\n{details}");
+            throw new Exception($"{source} croaked at line {line}: {msg}\n\n{details}");
         }
     }
 }

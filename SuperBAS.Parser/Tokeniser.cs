@@ -24,6 +24,7 @@ namespace SuperBAS.Parser
         private ICharStream codeStream;
         private Token? current;
         public bool EndOfStream { get => current == null; }
+        public string SourcePath { get => codeStream.SourcePath; }
 
         public Tokeniser(ICharStream codeStream)
         {
