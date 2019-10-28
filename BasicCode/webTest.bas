@@ -1,0 +1,5 @@
+1 LET x = 0
+2 PRINT x
+3 x = x + 1
+3.5 SLEEP 1000
+4 GOTO 2
