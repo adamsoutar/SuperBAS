@@ -5,7 +5,7 @@ namespace SuperBAS.Parser
 {
     public static class TokeniserUtils
     {
-        private static char[] whitespace = "\t ".ToCharArray();
+        private static char[] whitespace = "\r\t ".ToCharArray();
         // New lines are significant, they're punctuation not whitespace
         private static char[] punctuation = ":$#,()\n".ToCharArray();
         // Includes . for 3.14, there's no
