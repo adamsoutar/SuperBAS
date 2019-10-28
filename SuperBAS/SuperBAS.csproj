@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SuperBAS.Transpiler.CSharp\SuperBAS.Transpiler.CSharp.csproj" />
+    <ProjectReference Include="..\SuperBAS.Transpiler.Javascript\SuperBAS.Transpiler.Javascript.csproj" />
   </ItemGroup>
 </Project>
