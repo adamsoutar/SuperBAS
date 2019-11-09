@@ -13,7 +13,7 @@ SuperBAS is based on ZX BASIC, designed to simplify complex parts and add comman
 
 So why?
 
-People who played around with home computers in the 80s like the Spectrum or Amstrad can feel alienated by modern languages, and running emulators or interpreters for old languages are plagued by low speed or dated sugar-less syntax.
+**People who played around with home computers in the 80s like the Spectrum or Amstrad can feel alienated by programming for modern PCs**, and running emulators or interpreters for old languages are plagued by low speed or dated sugar-less syntax.
 
 SuperBAS fixes that! It is designed to match your nostalgia for older BASIC languages, not your frustration, and it compiles right down to a native binary via C# (or runs in a webpage with experimental Javascript transpilation). SuperBAS is not emulated or interpreted.
 
