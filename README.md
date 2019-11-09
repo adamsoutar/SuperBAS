@@ -2,6 +2,8 @@
 
 A compiler for turning a BASIC superset into native executables and/or web code.
 
+It's based on .NET Core 3 and supports Windows, macOS & Linux
+
 ## What and why?
 
 SuperBAS is based on ZX BASIC, designed to simplify complex parts and add commands for interfacing with modern operating systems.
@@ -19,7 +21,7 @@ SuperBAS fixes that! It is designed to match your nostalgia for older BASIC lang
 
 ## Usage
 
-Download a release for your platform, run it like so:
+Download [a release for your platform](https://github.com/adamsoutar/SuperBAS/releases), run it like so:
 
 ```bash
 ./SuperBas test.bas Program.cs native
