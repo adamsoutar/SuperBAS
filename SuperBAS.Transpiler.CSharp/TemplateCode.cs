@@ -123,7 +123,7 @@ namespace SuperBAS.Transpiler.CSharp
             var arDef = $"{arType}[";
             for (int i = 0; i < args.Length; i++)
                 // Cast the dimensions
-                // The cast is silent for something like DIM X(5.5, 3.2) - TODO Warn
+                // The cast is silent for something like DIM X(5.5, 3.2) - TODO Warn?
                 arDef += $"(int)({GetCodeForExpression(args[i])})" + (i == args.Length - 1 ? "" : ",");
             arDef += ']';
 
@@ -144,36 +144,33 @@ namespace SuperBAS.Transpiler.CSharp
             return $"{nm} = new List<{listType}>();";
         }
 
-        private string GetCodeForListAdd (IASTNode operand)
+        private IASTNode[] VerifyListOpArgs (string opName, IASTNode operand)
         {
             if (operand.Type != ASTNodeType.CompoundExpression)
-                Croak("LISTADD is a tupple command (see spec)");
+                Croak($"{opName} is a tupple command (see spec)");
 
             var args = ((ASTCompoundExpression)operand).Expressions;
             if (args[0].Type != ASTNodeType.Variable)
-                Croak("LISTADD's first argument should be a list variable");
+                Croak($"{opName}'s first argument should be a list variable");
 
             var nm = GetVarName((ASTVariable)args[0]);
             if (!DefinedLists.Contains(nm))
                 Croak($"Attempt to add to undefined list {nm}");
 
+            return args;
+        }
+
+        private string GetCodeForListAdd (IASTNode operand)
+        {
+            var args = VerifyListOpArgs("LISTADD", operand);
+            var nm = GetVarName((ASTVariable)args[0]);
             return $"{nm}.Add({GetCodeForExpression(args[1])});";
         }
 
         private string GetCodeForListRm (IASTNode operand)
         {
-            if (operand.Type != ASTNodeType.CompoundExpression)
-                Croak("LISTRM is a tupple command (see spec)");
-
-            var args = ((ASTCompoundExpression)operand).Expressions;
-            // TODO: This is exteremely similar to ListAdd, I WANT US TO MERGE
-            if (args[0].Type != ASTNodeType.Variable)
-                Croak("LISTRM's first argument should be a list variable");
-
+            var args = VerifyListOpArgs("LISTRM", operand);
             var nm = GetVarName((ASTVariable)args[0]);
-            if (!DefinedLists.Contains(nm))
-                Croak($"Attempt to remove from undefined list {nm}");
-
             return $"{nm}.RemoveAt((int)({GetCodeForExpression(args[1])}));";
         }
 
@@ -184,7 +181,7 @@ namespace SuperBAS.Transpiler.CSharp
 
             var args = ((ASTCompoundExpression)op).Expressions;
             // PrintAt depends on runtime variables
-            // And so is implemented in Templace.cs.txt
+            // And so is implemented in Skeleton.cs
             return $"PrintAt({GetCodeForExpression(args[0])}, {GetCodeForExpression(args[1])}, {GetCodeForExpression(args[2])});";
         }
 

@@ -316,7 +316,7 @@ namespace SuperBAS.Parser
 
         private IASTNode ParseExpression ()
         {
-            // TODO: Check these are right, they used to be reversed
+            // These used to be reversed
             // but caused a bug with array indexing
             return MightBeBinary(MightBeCall(ParseAtom()), 0);
         }

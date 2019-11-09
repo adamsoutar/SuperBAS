@@ -14,7 +14,6 @@ namespace SuperBAS
 
             if (args.Length == 0)
             {
-                // TODO: Use last program
                 Console.WriteLine("SuperBAS source file:");
                 file = Console.ReadLine();
             }
