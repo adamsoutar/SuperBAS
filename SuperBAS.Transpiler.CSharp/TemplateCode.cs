@@ -202,6 +202,24 @@ namespace SuperBAS.Transpiler.CSharp
             return outCode + $"{GetVarName(target)} = Console.ReadLine();";
         }
 
+        private string GetCodeForFileWrite(IASTNode operand, bool append)
+        {
+            if (operand.Type != ASTNodeType.CompoundExpression)
+            {
+                Croak("File writing operations are tuple commands. See spec.");
+            }
+
+            var ops = ((ASTCompoundExpression)operand).Expressions;
+            var flName = GetCodeForExpression(ops[0]);
+            var expToWrite = GetCodeForExpression(ops[1]);
+
+            return @$"
+            var sw = new StreamWriter({flName}, {(append ? "true" : "false")});
+            sw.Write({expToWrite});
+            sw.Close();
+            ";
+        }
+
         private string GetCodeForCommand(IASTNode command, float lineNumber)
         {
             /* This is either a command or a control structure */
@@ -253,6 +271,11 @@ namespace SuperBAS.Transpiler.CSharp
                         return "Console.ReadKey();";
                     case "INPUT":
                         return GetCodeForInput(cmd.Operand);
+                    // IO
+                    case "WRITEFILE":
+                        return GetCodeForFileWrite(cmd.Operand, false);
+                    case "APPENDFILE":
+                        return GetCodeForFileWrite(cmd.Operand, true);
                     default:
                         Croak($"As-yet unsupported command \"{cmd.Command}\"");
                         break;
@@ -402,6 +425,12 @@ namespace SuperBAS.Transpiler.CSharp
                     if (args.Length > 1)
                         dps = GetCodeForExpression(args[1]);
                     return $"Math.Round({cd}, {dps})";
+                case "READFILE":
+                    return $"ReadAllFile({cd})";
+                case "SPLIT":
+                    return $"({cd}).Split({GetCodeForExpression(args[1])})";
+                case "JOIN":
+                    return $"string.Join({GetCodeForExpression(args[1])}, {cd})";
                 case "LEN":
                     var end = "Length";
 

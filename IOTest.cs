@@ -1,9 +1,4 @@
-﻿using System;
-namespace SuperBAS.Transpiler.CSharp
-{
-    public static class Skeleton
-    {
-        public static string Code = @"
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +12,8 @@ namespace UserProgram
         private static Random rand;
         private static int startX;
         private static int startY;
-        /*DECLARATIONS*/
+        private static List<string> a_string;
+
 
         static void Gosub(double lineNumber)
         {
@@ -26,9 +22,28 @@ namespace UserProgram
             {
                 case -1:
                     return;
-                /*CASES*/
+                case 1:
+a_string = new List<string>();
+goto case 2;
+case 2:
+a_string.Add("Hello");
+goto case 3;
+case 3:
+a_string.Add("World");
+goto case 4;
+case 4:
+
+            var flStream = new FileStream("hello.txt", FileMode.Create);
+            flStream.Write((String.Join(",", a_string) + "!"));
+            flStream.Close();
+            
+goto case 5;
+case 5:
+Console.WriteLine(("It says: " + ReadAllFile("hello.txt")));
+goto case -1;
+
                 default:
-                 throw new Exception($""Invalid GOTO { lineNumber } - Not a line"");
+                 throw new Exception($"Invalid GOTO { lineNumber } - Not a line");
             }
 }
 
@@ -37,7 +52,7 @@ static void Main(string[] args)
     Console.Clear();
     startX = Console.CursorLeft;
     startY = Console.CursorTop;
-    Gosub(/*LOWESTLINE*/);
+    Gosub(1);
 }
 
 static void PrintAt(double x, double y, string text)
@@ -60,6 +75,4 @@ static string ReadAllFile (string flName) {
 }
     }
 }
-        ";
-    }
-}
+        

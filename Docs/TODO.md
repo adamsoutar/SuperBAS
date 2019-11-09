@@ -14,10 +14,10 @@ We can do slightly better with writing
 
 ```
 Write the string, if the file exists, empty and overwrite it
-1 WRITEFILE x$, "./hello.txt"
+1 WRITEFILE "./hello.txt", x$
 
 Add to the end of the file
-2 APPENDFILE x$, "./hello.txt"
+2 APPENDFILE "./hello.txt", x$
 ```
 
 In order to effectively read back data, we will probably need string split functions and, while we're at it, we should probably add join too.
