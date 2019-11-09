@@ -45,8 +45,6 @@ static void PrintAt(double x, double y, string text)
     /* I'm not sure this works. It certainly doesn't on macOS .NET Native */
     int oldx = Console.CursorLeft;
     int oldy = Console.CursorTop;
-    Console.WriteLine(startX + (int)x);
-    Console.WriteLine(startY + (int)y);
     Console.SetCursorPosition(startX + (int)x, startY + (int)y);
     Console.Write(text);
     Console.SetCursorPosition(oldx, oldy);

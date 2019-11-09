@@ -2,4 +2,6 @@
 2 PRINT x
 3 x = x + 1
 3.5 SLEEP 1000
+3.6 IF x > 10 THEN GOTO 5
 4 GOTO 2
+5 PRINT "Done!"

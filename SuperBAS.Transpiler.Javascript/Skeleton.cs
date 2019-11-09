@@ -14,8 +14,11 @@ async function goSub (ln) {
   while (!stop) {
       switch (ln) {
         case -1:
-            return;
+            return
 /*CASES*/
+        case Infinity:
+            stop = true
+            break
         default:
             throw new Error(`Invalid GOTO ${ln} - Not a line`)
             return

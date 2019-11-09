@@ -64,11 +64,23 @@ namespace SuperBAS.Transpiler.Javascript
                     case "INPUT":
                         return GetCodeForInput(cmd.Operand);
                     case "EXIT":
+                    case "STOP":
                         return "stop = true\nbreak";
                     default:
                         Croak($"Unimplemented command {cmd.Command}");
                         return "";
                 }
+            }
+
+            if (command.Type == ASTNodeType.If)
+            {
+                var ifCmd = (ASTIf)command;
+                var elseStr = "";
+                if (ifCmd.Else != null)
+                {
+                    elseStr += $" else {{ {GetCodeForCommand(ifCmd.Else, LineNumber)} }}";
+                }
+                return $"if ({GetCodeForExpression(ifCmd.Condition, true)}) {{ {GetCodeForCommand(ifCmd.Then, LineNumber)} }} {elseStr}";
             }
 
             Croak("Unimplemented control structure");
