@@ -344,10 +344,12 @@ namespace SuperBAS.Parser
                 {
                     tokenStream.Read();
 
+                    /* TODO: Put this in GetCodeForVarAssignment
                     if (op.Value == "=" &&
                         !(left.Type == ASTNodeType.Variable ||
                           left.Type == ASTNodeType.Call))
                         Croak("Can only assign to variable or array.");
+                    */
 
                     return MightBeBinary(new ASTBinary()
                     {
