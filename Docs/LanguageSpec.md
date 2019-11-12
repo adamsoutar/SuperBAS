@@ -183,6 +183,16 @@ Pause the program for the amount of milliseconds passed to this command
 
 `SLEEP x`
 
+#### WRITEFILE
+
+Write a string expression to a file. If it already exists, it will be emptied and over-written.
+
+`WRITEFILE "./hello.txt", x$`
+
+#### APPENDFILE
+
+Similar to `WRITEFILE` but if the file exists, the string is appended to the end.
+
 #### PRINTAT
 
 Print the passed string at a location on the screen
@@ -241,6 +251,28 @@ Converts a string into a number
 ```
 1 LET mystr$ = "2"
 2 PRINT VAL(mystr$) * 2
+```
+
+#### SPLIT$
+
+Splits a string by a separator & returns a list of substrings.
+
+```
+1 LET a$ = "Adam,George,James,Stephen"
+2 LIST lst$
+3 lst$ = SPLIT$(a$, ",")
+```
+*Note: As of now, you can't assign in a `LIST` command. You must initialise the list, then assign to it in a separate line.*
+
+#### JOIN$
+
+Join a string array into a single string separated by the operand.
+
+```
+1 DIM a$(2)
+2 a$(0) = "Hello"
+3 a$(1) = "World"
+4 PRINT JOIN$(a$, ",")
 ```
 
 #### LEN

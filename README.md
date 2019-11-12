@@ -27,10 +27,10 @@ Download [a release for your platform](https://github.com/adamsoutar/SuperBAS/re
 ./SuperBas test.bas Program.cs native
 ```
 
-You can compile the resulting file on Windows with
+You can compile the resulting file on Windows with a command like this (assuming you have VS Build Tools installed):
 
 ```bash
-csc -out:MyProgram.exe Output.cs
+csc Output.cs /out:MyProgram.exe /optimize
 ```
 
 or
