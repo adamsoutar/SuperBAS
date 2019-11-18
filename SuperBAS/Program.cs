@@ -20,7 +20,9 @@ namespace SuperBAS
             else file = args[0];
 
             if (args.Length > 1)
+            {
                 output = args[1];
+            }
             else Console.WriteLine($"[warn] No output filename provided, defaulting");
 
             if (args.Length > 2 && args[2] == "web")

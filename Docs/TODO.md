@@ -2,11 +2,11 @@
 
 *It's like a consortium... of me... the only contributor*
 
-`!=` should also be aliased with `<>`
+~~`!=` should also be aliased with `<>`~~
 
 `;` should prevent `\n` in `PRINT`
 
-Capitalisation should not be enforced on keywords. Capitalisation for variables should be a config option.
+~~Capitalisation should not be enforced on keywords or variables~~, though capitalisation for variables should be a config option.
 
 `:` should allow multi-line `IF`
 

@@ -95,7 +95,12 @@ namespace SuperBAS.Parser
         private Token ReadIdentifier ()
         {
             string identifier = ReadWhile(TokeniserUtils.IsIdentifierChar);
+            // This makes things like print not case sensitive
+            // It also means var names are not case sensitive, maybe this should be a setting?
+            // TODO: Resolve
+            identifier = identifier.ToUpper();
             TokenType type = TokeniserUtils.IsKeyword(identifier) ? TokenType.Keyword : TokenType.Variable;
+
             // This catches things like AND/OR/MOD from being seen as variables
             if (TokeniserUtils.IsOperator(identifier))
                 type = TokenType.Operator;
@@ -130,7 +135,24 @@ namespace SuperBAS.Parser
             if (TokeniserUtils.IsNumber(ch)) return ReadNumber();
             if (TokeniserUtils.IsIdentifierChar(ch)) return ReadIdentifier();
             if (TokeniserUtils.IsPunctuation(ch)) return TokenFromNextChar(TokenType.Punctuation);
-            if (TokeniserUtils.IsOperator(ch)) return TokenFromNextChar(TokenType.Operator);
+
+            if (TokeniserUtils.IsOperatorChar(ch)) {
+                var op = ReadWhile(TokeniserUtils.IsOperatorChar);
+
+                op = TokeniserUtils.ReplaceOperatorAliases(op);
+
+                if (!TokeniserUtils.IsOperator(op))
+                {
+                    // Eg. "=+-=", "<=!=><"
+                    Croak($"{op} is not a valid operator.");
+                }
+
+                return new Token()
+                {
+                    Type = TokenType.Operator,
+                    Value = op
+                };
+            }
 
             Croak($"Unexpected character {ch}");
             return null;

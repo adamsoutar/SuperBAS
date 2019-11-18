@@ -15,6 +15,7 @@ namespace SuperBAS.Parser
         private static char[] letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         // Strings valid for the body of an identifier such as myString2
         private static char[] identifierChars = numbers.Concat(letters).ToArray();
+        private static char[] operatorChars = "=<>!&%|+-*/".ToCharArray();
 
         private static bool Contains<T> (T[] a, T c)
         {
@@ -50,9 +51,25 @@ namespace SuperBAS.Parser
         {
             return IsOperator(c.ToString());
         }
+        public static bool IsOperatorChar(char c)
+        {
+            // Chars that could be contained in a longer operator,
+            // but aren't necessarily their own operator, like !
+            return Contains(operatorChars, c);
+        }
         public static bool IsKeyword(string s)
         {
             return Contains(LangUtils.Keywords, s);
+        }
+
+        public static string ReplaceOperatorAliases (string o)
+        {
+            var bo = LangUtils.BinaryOperatorAliases;
+            if (Contains(bo.Keys.ToArray(), o))
+            {
+                return bo[o];
+            }
+            return o;
         }
     }
 }

@@ -7,5 +7,6 @@
   <ItemGroup>
     <Compile Remove="Class1.cs" />
     <Compile Remove="ParserUtils.cs" />
+    <Compile Remove="ASTDumper.cs" />
   </ItemGroup>
 </Project>

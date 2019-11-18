@@ -24,6 +24,14 @@ namespace SuperBAS.Parser
             ["/"] = 25,
             ["MOD"] = 20
         };
+        public static Dictionary<string, string> BinaryOperatorAliases = new Dictionary<string, string>
+        {
+            ["<>"] = "!=",
+            ["||"] = "OR",
+            ["&&"] = "AND",
+            ["%"] = "MOD",
+            ["!"] = "NOT"
+        };
         public static string[] Commands =
         {
             "PRINT", "IF", "LET", "GOTO", "GOSUB", "RETURN", "CLS", "FOR", "NEXT",
