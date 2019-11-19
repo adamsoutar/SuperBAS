@@ -245,9 +245,7 @@ namespace SuperBAS.Transpiler.CSharp
                     case "SLEEP":
                         return $"Thread.Sleep({GetCodeForExpression(cmd.Operand)});";
                     case "LET":
-                        return GetCodeForAssignment(cmd, true);
-                    case "ASSIGN":
-                        return GetCodeForAssignment(cmd, false);
+                        return GetCodeForAssignment(cmd);
                     case "NEXT":
                         return GetCodeForNext(cmd.Operand);
                     case "TOPOF":
@@ -358,18 +356,11 @@ namespace SuperBAS.Transpiler.CSharp
             }
         }
 
-        private string GetCodeForAssignment(ASTCommand cmd, bool define)
+        private string GetCodeForAssignment(ASTCommand cmd)
         {
             var oper = (ASTBinary)cmd.Operand;
-            if (define)
-            {
-                // LET
-                if (oper.Left.Type != ASTNodeType.Variable)
-                    Croak("You can only LET variables. Note: You don't need LET for array items.");
-                var vr = (ASTVariable)oper.Left;
-                DefineVar(vr.IsString ? VarType.String : VarType.Number, vr.Name);
-                DefinedVars.Add(vr.Name);
-            }
+            // If this is a LET (whose implementation is the same as ASSIGN),
+            // the var will be auto-defined
             return $"{GetCodeForVarAssignment(oper.Left)} = {GetCodeForExpression(oper.Right)};";
         }
 

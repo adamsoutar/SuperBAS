@@ -145,7 +145,7 @@ namespace SuperBAS.Parser
             {
                 return new ASTCommand()
                 {
-                    Command = "ASSIGN",
+                    Command = "LET",
                     Operand = command
                 };
             }
