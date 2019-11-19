@@ -23,6 +23,8 @@ namespace SuperBAS.Transpiler.CSharp
         public List<float> LineNumbers = new List<float>();
         public Dictionary<string, Loop> loops = new Dictionary<string, Loop>();
         public List<string> DefinedLists = new List<string>();
+        // Includes Lists, as well as simple vars, arrays and maps
+        public List<string> DefinedVars = new List<string>();
 
         public TemplateCode(Action<VarType, string> Define, Action<string> Raw)
         {
@@ -119,6 +121,7 @@ namespace SuperBAS.Transpiler.CSharp
             var arCode = $"{arType}[{commas}]";
 
             DefineRaw($"private static {arCode} {varName};");
+            DefinedVars.Add(varName);
 
             var arDef = $"{arType}[";
             for (int i = 0; i < args.Length; i++)
@@ -140,6 +143,7 @@ namespace SuperBAS.Transpiler.CSharp
             DefinedLists.Add(nm);
             var listType = vr.IsString ? "string" : "double";
             DefineRaw($"private static List<{listType}> {nm};");
+            DefinedVars.Add(nm);
 
             return $"{nm} = new List<{listType}>();";
         }
@@ -299,8 +303,12 @@ namespace SuperBAS.Transpiler.CSharp
                 var counter = loopVar.Name;
 
                 DefineVar(VarType.Number, counter);
+                DefinedVars.Add(counter);
+
                 var skp = $"skip{counter}";
                 DefineVar(VarType.Bool, skp);
+                DefinedVars.Add(skp);
+
                 skp = $"{skp}_bool";
 
                 var startCount = forLoop.Assignment.Right;
@@ -360,6 +368,7 @@ namespace SuperBAS.Transpiler.CSharp
                     Croak("You can only LET variables. Note: You don't need LET for array items.");
                 var vr = (ASTVariable)oper.Left;
                 DefineVar(vr.IsString ? VarType.String : VarType.Number, vr.Name);
+                DefinedVars.Add(vr.Name);
             }
             return $"{GetCodeForVarAssignment(oper.Left)} = {GetCodeForExpression(oper.Right)};";
         }
@@ -369,7 +378,15 @@ namespace SuperBAS.Transpiler.CSharp
             // So we can have vars of different types with the same name
             // myStr$ -> myStr_string
             // myFloat -> myFloat_float
-            return $"{vr.Name}{(vr.IsString ? "_string" : "_number")}";
+            var vrName = $"{vr.Name}{(vr.IsString ? "_string" : "_number")}";
+            if (!DefinedVars.Contains(vrName))
+            {
+                // Auto-define simple variable references we haven't seen before
+                // Doesn't apply to lists or arrays
+                DefineRaw($"private static {(vr.IsString ? "string" : "double")} {vrName} = {(vr.IsString ? "\"\"" : "0.00")}");
+                DefinedVars.Add(vrName);
+            }
+            return vrName;
         }
 
         public string GetCodeForNumber(string num)
