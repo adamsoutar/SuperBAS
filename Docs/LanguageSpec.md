@@ -10,6 +10,10 @@ Logs the operand (string or number) to STDOUT
 
 `PRINT "Hello, world!"`
 
+#### REM
+
+`REM` is a special keyword used for comments. When the tokeniser (part of the compiler) reads `REM` anywhere at all - apart from in strings - it stops reading the line, even if there's a keyword like `PRINT` further along.
+
 #### CLS
 
 Clears the console (no operand)
@@ -55,11 +59,17 @@ Return the program to the line after the latest GOSUB - If no GOSUB has been cal
 
 #### LET
 
-Assign a variable.
+Assign a variable. If the left of the `=` operator is an array indexing call, it assigns to the array at that slot.
 
 `LET x = 10`
 
 `LET name$ = "Adam"`
+
+Note that `LET` is not required, this is the same as writing the statement without `LET`:
+
+`x = 5`
+
+`myMap(2, 3) = 4`
 
 #### DIM
 
@@ -117,14 +127,6 @@ Takes input from the console and assigns it to a variable. Optionally presents a
 
 `INPUT "What's your name?", name$`
 
-#### =
-
-Perform an assignment to an **already defined** variable - not technically a command, but treated as such. Use with array index calls to set the variable at that index.
-
-`x = 5`
-
-`myMap(2, 3) = 4`
-
 #### FOR
 
 Initiate a counting loop.
@@ -169,7 +171,7 @@ Conditionals are evaluated lazily, in the statement:
 
 `IF x() = 10 AND y() = 20 THEN ...`
 
-Where x and y are user functions, if x() is 10, then y is **not called** (likewise with OR if condition 1 is true).
+Where x and y are user functions, if x() is not 10, then y is **not called** (likewise with OR if condition 1 is true).
 
 *Note 3*
 
