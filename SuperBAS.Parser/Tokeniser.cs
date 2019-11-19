@@ -92,13 +92,8 @@ namespace SuperBAS.Parser
                 Value = ReadWhile(TokeniserUtils.IsNumber)
             };
         }
-        private Token ReadIdentifier ()
+        private Token ReadIdentifier (string identifier)
         {
-            string identifier = ReadWhile(TokeniserUtils.IsIdentifierChar);
-            // This makes things like print not case sensitive
-            // It also means var names are not case sensitive, maybe this should be a setting?
-            // TODO: Resolve
-            identifier = identifier.ToUpper();
             TokenType type = TokeniserUtils.IsKeyword(identifier) ? TokenType.Keyword : TokenType.Variable;
 
             // This catches things like AND/OR/MOD from being seen as variables
@@ -133,7 +128,19 @@ namespace SuperBAS.Parser
 
             if (ch == '"') return ReadString();
             if (TokeniserUtils.IsNumber(ch)) return ReadNumber();
-            if (TokeniserUtils.IsIdentifierChar(ch)) return ReadIdentifier();
+            if (TokeniserUtils.IsIdentifierChar(ch))
+            {
+                string identifier = ReadWhile(TokeniserUtils.IsIdentifierChar).ToUpper();
+
+                if (identifier == "REM")
+                {
+                    // Read until the next newline, 'cause this is a comment
+                    ReadWhile(ch => ch != '\n');
+                    return ReadNext();
+                }
+
+                return ReadIdentifier(identifier);
+            }
             if (TokeniserUtils.IsPunctuation(ch)) return TokenFromNextChar(TokenType.Punctuation);
 
             if (TokeniserUtils.IsOperatorChar(ch)) {

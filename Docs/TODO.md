@@ -23,3 +23,7 @@ Can we make the transpiler croak tell you what line failed? It gives you absolut
 Make transpilers inherit from an abstract class that implements croak + Parser AST loading
 
 User functions
+
+~~REM/Comments~~
+
+When jumping to a line that is out of bounds, we should continue execution from the next valid line
