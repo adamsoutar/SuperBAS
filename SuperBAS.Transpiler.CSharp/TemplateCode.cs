@@ -318,7 +318,7 @@ namespace SuperBAS.Transpiler.CSharp
                 var counter = loopVar.Name;
 
                 DefineVar(VarType.Number, counter);
-                DefinedVars.Add(counter);
+                DefinedVars.Add($"{counter}_number");
 
                 var skp = $"skip{counter}";
                 DefineVar(VarType.Bool, skp);
