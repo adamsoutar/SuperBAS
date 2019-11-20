@@ -82,11 +82,11 @@ namespace SuperBAS.Transpiler.CSharp
         {
             string final = varDecs;
             foreach (var str in strings)
-                final += $"static string {str}_string = \"\";\n";
+                final += $"private static string {str}_string = \"\";\n";
             foreach (var num in numbers)
-                final += $"static double {num}_number = 0.0;\n";
+                final += $"private static double {num}_number = 0.0;\n";
             foreach (var bl in bools)
-                final += $"static bool {bl}_bool = false;\n";
+                final += $"private static bool {bl}_bool = false;\n";
             return final;
         }
     }
