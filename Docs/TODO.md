@@ -8,7 +8,7 @@
 
 ~~Capitalisation should not be enforced on keywords or variables~~, capitalisation for variables should be a config option.
 
-`:` should allow multi-line `IF`
+~~`:` should allow multi-line `IF`~~
 
 ~~First reference to var should initialise it.~~
 
