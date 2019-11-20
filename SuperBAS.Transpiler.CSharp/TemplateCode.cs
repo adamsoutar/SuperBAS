@@ -113,11 +113,13 @@ namespace SuperBAS.Transpiler.CSharp
 
             var varName = GetVarName(cl.FunctionName);
             var args = cl.Arguments.Expressions;
+            var expArgs = args.Select(x => GetCodeForExpression(x)).ToArray();
             var dimensions = args.Length;
             var commas = "";
             for (int i = 0; i < dimensions - 1; i++) commas += ",";
 
             var arType = cl.FunctionName.IsString ? "string" : "double";
+            var defaultValue = cl.FunctionName.IsString ? "\"\"" : "0.00";
             var arCode = $"{arType}[{commas}]";
 
             DefineRaw($"private static {arCode} {varName};");
@@ -127,10 +129,25 @@ namespace SuperBAS.Transpiler.CSharp
             for (int i = 0; i < args.Length; i++)
                 // Cast the dimensions
                 // The cast is silent for something like DIM X(5.5, 3.2) - TODO Warn?
-                arDef += $"(int)({GetCodeForExpression(args[i])})" + (i == args.Length - 1 ? "" : ",");
+                arDef += $"(int)({expArgs[i]})" + (i == args.Length - 1 ? "" : ",");
             arDef += ']';
 
-            return $"{varName} = new {arDef};";
+            var defCode = $"{varName} = new {arDef};";
+            // We need to fill the array with values.
+            // Otherwise, arrays of string will be null not ""
+            for (int i = 0; i < dimensions; i++) {
+                defCode += $"for (int d{i} = 0; d{i} < {expArgs[i]}; d{i}++) {{\n";
+            }
+            
+            defCode += $"{varName}[";
+            for (int i = 0; i < dimensions; i++) {
+                defCode += $"d{i},";
+            }
+            defCode = defCode.Substring(0, defCode.Length - 1);
+            defCode += $"] = {defaultValue};";
+            for (int i = 0; i < dimensions; i++) defCode += "}";
+
+            return defCode;
         }
 
         private string GetCodeForList (IASTNode operand)
