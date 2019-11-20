@@ -321,13 +321,38 @@ namespace SuperBAS.Parser
             return MightBeBinary(MightBeCall(ParseAtom()), 0);
         }
 
+        private ASTVariable StringAsVariable (string s) {
+            // test$ becomes an ASTVar with true isString
+            // number as isString false
+            var vr = new ASTVariable() {
+                Name = s,
+                IsString = false
+            };
+            if (s[s.Length - 1] == '$') {
+                vr.IsString = true;
+                vr.Name = s.Substring(0, s.Length - 1);
+            }
+            return vr;
+        }
+
         private IASTNode MightBeCall (IASTNode node)
         {
             if (node.Type == ASTNodeType.Variable && IsNextPunctuation("("))
             {
+                var funcName = (ASTVariable)node;
+                // Eg. Alias "INT" as "FLOOR"
+                foreach (var vA in LangUtils.StdLibAliases) {
+                    if (
+                        vA.Alias.Name == funcName.Name &&
+                        vA.Alias.IsString == funcName.IsString
+                        ) {
+                        funcName = StringAsVariable(vA.IsAliasFor);
+                    }
+                }
+
                 return new ASTCall()
                 {
-                    FunctionName = (ASTVariable)node,
+                    FunctionName = funcName,
                     Arguments = Delimited("(", ")", ",", ParseExpression)
                 };
             }

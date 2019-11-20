@@ -4,6 +4,11 @@ using System.Linq;
 
 namespace SuperBAS.Parser
 {
+    public struct VariableAlias {
+        public ASTVariable Alias;
+        public string IsAliasFor;
+    }
+
     public static class LangUtils
     {
         // In the form key = operator, value = precedence 
@@ -102,6 +107,15 @@ namespace SuperBAS.Parser
             {
                 Name = "JOIN",
                 IsString = true
+            }
+        };
+        public static VariableAlias[] StdLibAliases = {
+            new VariableAlias() {
+                Alias = new ASTVariable() {
+                    Name = "INT",
+                    IsString = false
+                },
+                IsAliasFor = "FLOOR"
             }
         };
         public static string[] CompilerKeywords =
