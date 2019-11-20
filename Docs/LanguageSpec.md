@@ -159,11 +159,11 @@ If the condition is met, execute the command listed afer THEN. Optionally, if it
 
 *Note 1*
 
-When used in conjunction with `:`, this does **not** allow you to execute multiple statements on the satisfaction of an IF statement. They are separated as though they followed on multiple lines.
+When used in conjunction with `:`, you can combine multiple commands into one `THEN` or `ELSE` statement
 
-`IF x = 5 THEN PRINT "Hello" : PRINT "World"`
+`IF x = 2 THEN PRINT "x is" : PRINT " two" ELSE PRINT "x is" : PRINT " not" : PRINT " two"`
 
-Prints "World" **always** no matter what the outcome of the if was.
+Is a trivial example, but this can be very useful when applied appropriately.
 
 *Note 2*
 
