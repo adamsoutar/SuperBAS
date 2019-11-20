@@ -14,7 +14,7 @@
 
 Should be able to assign with `LIST` and `DIM` statements
 
-Arrays of string ~~and uninitialised string (`LET a$`) vars~~ should be `""` NOT `null`.
+~~Arrays of string and uninitialised string (`LET a$`) vars should be `""` NOT `null`.~~
 
 ~~`INT` should be an alias for `FLOOR`~~
 
