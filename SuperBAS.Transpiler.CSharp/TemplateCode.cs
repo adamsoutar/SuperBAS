@@ -111,7 +111,7 @@ namespace SuperBAS.Transpiler.CSharp
             if (IsStdLib(cl.FunctionName))
                 Croak("Attempt to DIM a name from the standard library");
 
-            var varName = GetVarName(cl.FunctionName);
+            var varName = GetVarName(cl.FunctionName, false);
             var args = cl.Arguments.Expressions;
             var expArgs = args.Select(x => GetCodeForExpression(x)).ToArray();
             var dimensions = args.Length;
@@ -381,13 +381,13 @@ namespace SuperBAS.Transpiler.CSharp
             return $"{GetCodeForVarAssignment(oper.Left)} = {GetCodeForExpression(oper.Right)};";
         }
 
-        public string GetVarName(ASTVariable vr)
+        public string GetVarName(ASTVariable vr, bool autoDefine = true)
         {
             // So we can have vars of different types with the same name
             // myStr$ -> myStr_string
             // myFloat -> myFloat_float
             var vrName = $"{vr.Name}{(vr.IsString ? "_string" : "_number")}";
-            if (!DefinedVars.Contains(vrName))
+            if (autoDefine && !DefinedVars.Contains(vrName))
             {
                 // Auto-define simple variable references we haven't seen before
                 // Doesn't apply to lists or arrays
