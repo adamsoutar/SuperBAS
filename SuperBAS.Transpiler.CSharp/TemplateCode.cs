@@ -374,7 +374,7 @@ namespace SuperBAS.Transpiler.CSharp
             {
                 // Auto-define simple variable references we haven't seen before
                 // Doesn't apply to lists or arrays
-                DefineRaw($"private static {(vr.IsString ? "string" : "double")} {vrName} = {(vr.IsString ? "\"\"" : "0.00")}");
+                DefineRaw($"private static {(vr.IsString ? "string" : "double")} {vrName} = {(vr.IsString ? "\"\"" : "0.00")};");
                 DefinedVars.Add(vrName);
             }
             return vrName;
