@@ -74,6 +74,9 @@ namespace SuperBAS.Transpiler.Javascript
 
             if (command.Type == ASTNodeType.If)
             {
+                /*
+    TODO: Fix this when we get the JS transpiler up to date
+
                 var ifCmd = (ASTIf)command;
                 var elseStr = "";
                 if (ifCmd.Else != null)
@@ -81,6 +84,7 @@ namespace SuperBAS.Transpiler.Javascript
                     elseStr += $" else {{ {GetCodeForCommand(ifCmd.Else, LineNumber)} }}";
                 }
                 return $"if ({GetCodeForExpression(ifCmd.Condition, true)}) {{ {GetCodeForCommand(ifCmd.Then, LineNumber)} }} {elseStr}";
+                */
             }
 
             Croak("Unimplemented control structure");

@@ -215,21 +215,31 @@ namespace SuperBAS.Parser
             {
                 var condition = ParseExpression();
                 ExpectKeyword("THEN");
-                var then = ParseCommand();
+
+                var then = new List<IASTNode>();
+                then.Add(ParseCommand());
+
+                while (IsNextPunctuation(":")) {
+                    tokenStream.Read();
+                    then.Add(ParseCommand());
+                }
 
                 // Optional else
-                IASTNode elseStatement = null;
+                var elseStatement = new List<IASTNode>();
                 if (IsNextKeyword("ELSE"))
                 {
                     tokenStream.Read();
-                    var elseRaw = ParseCommand();
-                    elseStatement = elseRaw;
+                    elseStatement.Add(ParseCommand());
+                    while (IsNextPunctuation(":")) {
+                        tokenStream.Read();
+                        elseStatement.Add(ParseCommand());
+                    }
                 }
                 return new ASTIf()
                 {
                     Condition = condition,
-                    Then = then,
-                    Else = elseStatement
+                    Then = then.ToArray(),
+                    Else = elseStatement.ToArray()
                 };
             }
 

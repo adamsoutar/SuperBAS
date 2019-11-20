@@ -303,12 +303,25 @@ namespace SuperBAS.Transpiler.CSharp
             if (command.Type == ASTNodeType.If)
             {
                 var ifCmd = (ASTIf)command;
-                var elseStr = "";
+                var thenCode = "";
+                foreach (IASTNode thn in ifCmd.Then) {
+                    // TODO: Check if GetCodeForCommand is *garunteed* to end in a semi-colon.
+                    //       'cause it has to for this.
+                    thenCode += $"{GetCodeForCommand(thn, lineNumber)}\n";
+                }
+
+                var elseCode = "";
                 if (ifCmd.Else != null)
                 {
-                    elseStr += $" else {{ {GetCodeForCommand(ifCmd.Else, lineNumber)} }}";
+                    elseCode = "else {\n";
+                    foreach (IASTNode els in ifCmd.Else) {
+                        // TODO: Same as above
+                        elseCode += $"{GetCodeForCommand(els, lineNumber)}\n";
+                    }
+                    elseCode += "}";
                 }
-                return $"if ({GetCodeForExpression(ifCmd.Condition, true)}) {{ {GetCodeForCommand(ifCmd.Then, lineNumber)} }} {elseStr}";
+                
+                return $"if ({GetCodeForExpression(ifCmd.Condition, true)}) {{ {thenCode} }} {elseCode}";
             }
             if (command.Type == ASTNodeType.For)
             {
@@ -391,7 +404,7 @@ namespace SuperBAS.Transpiler.CSharp
             {
                 // Auto-define simple variable references we haven't seen before
                 // Doesn't apply to lists or arrays
-                DefineVar(vr.IsString ? VarType.String : VarType.Number, vrName);
+                DefineVar(vr.IsString ? VarType.String : VarType.Number, vr.Name);
                 DefinedVars.Add(vrName);
             }
             return vrName;
@@ -403,7 +416,7 @@ namespace SuperBAS.Transpiler.CSharp
             // Add a decimal so that 10 / 3 is 3.333... not 3
             // (This makes number literals a 'double' type)
             if (!num.Contains(".")) extra = ".0";
-            // extra = "m"; for accurate but 20x slower decimal type
+            // TODO: Setting for extra = "m"; for accurate but 20x slower decimal type
             return $"{num}{extra}";
         }
 
