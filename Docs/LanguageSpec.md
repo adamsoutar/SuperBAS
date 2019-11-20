@@ -309,6 +309,8 @@ Returns the lowest integer before the decimal passed as the parameter, ie. cuts 
 
 `FLOOR(3.9) = 3`
 
+**Note:** `FLOOR` is aliased with `INT` for comfort
+
 #### CEIL
 
 Returns the smallest integer after the number passed as the parameter. ie. Round up.
@@ -355,7 +357,7 @@ Any line beginning with `#` instead of a line number indicates a command at comp
 
 #### INCLUDE
 
-Use with a string indicating a path to another basic file. This file will essentially be 'pasted' into the program.
+Use with a **compile-time constant** string indicating a path to another basic file. This file will essentially be 'pasted' into the program.
 
 Calculate.bas
 ```
