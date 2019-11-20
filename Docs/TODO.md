@@ -27,3 +27,7 @@ User functions
 ~~REM/Comments~~
 
 When jumping to a line that is out of bounds, we should continue execution from the next valid line
+
+Compiler config.json file or something - configure some opinionated switches, like decimal accuracy (BigInt for JS)
+
+Publish the spec in the releases so that its information doesn't go out of sync with the version you download.
