@@ -12,20 +12,20 @@ namespace SuperBAS
 {
     class Autoupdater
     {
-        private struct Asset {
-            public string name;
-            public string browser_download_url;
+        private class Asset {
+            public string name {get;set;}
+            public string browser_download_url {get;set;}
         }
-        private struct GitHubResponse {
-            public Asset[] assets;
-            public string tag_name;
+        private class GitHubResponse {
+            public Asset[] assets {get;set;}
+            public string tag_name {get;set;}
         }
 
         // Set from Program.cs
         public static string thisVersion = "";
 
         public static void UpdateIfAvailable() {
-            //try {
+            try {
                 var latest = GetLatestRelease();
                 if (latest.tag_name == thisVersion) {
                     Console.WriteLine($"[info] SuperBAS ({thisVersion}) is up to date");
@@ -45,19 +45,23 @@ namespace SuperBAS
                         var downloadedTo = DownloadAndReplace(asset.browser_download_url);
                         Console.WriteLine("[info] This version of SuperBAS has been overwritten and will now close.");
                         Console.Write("Press any key...");
+                        Console.ReadKey();
                         Environment.Exit(0);
                     }
                 }
 
                 Console.WriteLine("[error] Couldn't find a release for your platform. Please seek one here:");
                 Console.WriteLine("https://github.com/adamsoutar/SuperBAS/releases");
-            /*} catch (Exception ex) {
+            } catch (Exception ex) {
                 Console.WriteLine("[warn] Failed to check for updates");
-            }*/
+                Console.WriteLine(ex.Message);
+            }
         }
 
         static string DownloadAndReplace (string newUrl) {
-            string mePath = Assembly.GetExecutingAssembly().CodeBase;
+            string mePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+            Console.WriteLine(mePath);
+            Console.WriteLine(newUrl);
             using (var client = new WebClient()) {
                 client.DownloadFile(newUrl, mePath);
             }
