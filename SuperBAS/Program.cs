@@ -9,6 +9,9 @@ namespace SuperBAS
     {
         static void Main(string[] args)
         {
+            Autoupdater.thisVersion = "0.3";
+            Autoupdater.UpdateIfAvailable();
+
             string file;
             string output = "./Output.cs";
 
