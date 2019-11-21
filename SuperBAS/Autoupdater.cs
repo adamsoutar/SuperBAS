@@ -60,8 +60,8 @@ namespace SuperBAS
 
         static string DownloadAndReplace (string newUrl) {
             string mePath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
-            Console.WriteLine(mePath);
-            Console.WriteLine(newUrl);
+            Console.WriteLine($"Overwriting {mePath}");
+            Console.WriteLine($"Downloading from {newUrl}...");
             using (var client = new WebClient()) {
                 client.DownloadFile(newUrl, mePath);
             }
