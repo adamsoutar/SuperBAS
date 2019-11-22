@@ -22,7 +22,7 @@ Can we make the transpiler croak tell you what line failed? It gives you absolut
 
 Make transpilers inherit from an abstract class that implements croak + Parser AST loading
 
-User functions
+~~User functions~~
 
 ~~REM/Comments~~
 

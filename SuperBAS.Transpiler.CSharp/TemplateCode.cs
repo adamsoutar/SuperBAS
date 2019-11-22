@@ -25,6 +25,7 @@ namespace SuperBAS.Transpiler.CSharp
         public List<string> DefinedLists = new List<string>();
         // Includes Lists, as well as simple vars, arrays and maps
         public List<string> DefinedVars = new List<string>();
+        public List<string> DefinedFunctions = new List<string>();
 
         public TemplateCode(Action<VarType, string> Define, Action<string> Raw)
         {
@@ -361,6 +362,27 @@ namespace SuperBAS.Transpiler.CSharp
                 return $"if ({skp}) {skp} = false; else {GetVarName(loopVar)} = {GetCodeForExpression(startCount)};";
             }
 
+            if (command.Type == ASTNodeType.FunctionDefinition) {
+                var fn = (ASTFunctionDefinition)command;
+                var fnName = fn.FunctionName;
+                var fnType = fnName.IsString ? "string" : "double";
+                DefinedFunctions.Add(GetVarName(fnName, false));
+
+                var argString = "";
+                foreach (var arg in fn.Arguments) {
+                    argString += $"{(arg.IsString ? "string" : "double")} {GetVarName(arg, false)},";
+                }
+                argString = argString.Substring(0, argString.Length - 1);
+
+                var fnString = $"userFn_{GetVarName(fnName, false)}";
+                DefineRaw($@"
+                    static {fnType} {fnString} ({argString}) {{
+                        return {GetCodeForExpression(fn.Expression)};
+                    }}
+                ");
+                return $"// Function definition for {fnString}";
+            }
+
             Croak("Unimplemented control structure.");
             return "";
         }
@@ -381,7 +403,8 @@ namespace SuperBAS.Transpiler.CSharp
                 var cl = (ASTCall)left;
                 if (IsStdLib(cl.FunctionName))
                     Croak("Can't assign to the standard library.");
-                //TODO: Check we aren't assigning to a user function
+                if (DefinedFunctions.Contains(GetVarName(cl.FunctionName, false)))
+                    Croak("Can't assign to a user function.");
                 return GetCodeForCall(cl);
             }
         }
@@ -494,7 +517,20 @@ namespace SuperBAS.Transpiler.CSharp
             }
             else
             {
-                // TODO: User functions
+                if (DefinedFunctions.Contains(GetVarName(call.FunctionName, false))) {
+                    // It's a user fn
+                    var fnName = call.FunctionName;
+                    var fnString = $"userFn_{GetVarName(fnName, false)}";
+
+                    var argString = "";
+                    foreach (var arg in call.Arguments.Expressions) {
+                        argString += $"{GetCodeForExpression(arg)},";
+                    }
+                    argString = argString.Substring(0, argString.Length - 1);
+
+                    return $"{fnString}({argString})";
+                }
+
                 var arName = GetVarName(call.FunctionName);
                 var assignCode = $"{arName}[";
 
