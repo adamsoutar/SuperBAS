@@ -41,7 +41,8 @@ namespace SuperBAS.Parser
         {
             "PRINT", "IF", "LET", "GOTO", "GOSUB", "RETURN", "CLS", "FOR", "NEXT",
             "TOPOF", "DIM", "LIST", "LISTADD", "LISTRM", "PRINTAT", "INK", "PAPER",
-            "SLEEP", "WAITKEY", "EXIT", "STOP", "INPUT", "WRITEFILE", "APPENDFILE"
+            "SLEEP", "WAITKEY", "EXIT", "STOP", "INPUT", "WRITEFILE", "APPENDFILE",
+            "DEF"
         };
         public static ASTVariable[] StdLib =
         {

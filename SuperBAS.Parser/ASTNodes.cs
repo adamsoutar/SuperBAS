@@ -33,6 +33,13 @@ namespace SuperBAS.Parser
         public ASTCompoundExpression Arguments;
     }
 
+    public class ASTFunctionDefinition : IASTNode {
+        public ASTNodeType Type { get => ASTNodeType.FunctionDefinition; }
+        public ASTVariable FunctionName;
+        public ASTVariable[] Arguments;
+        public IASTNode Expression;
+    }
+
     public class ASTIf : IASTNode
     {
         public ASTNodeType Type { get => ASTNodeType.If; }

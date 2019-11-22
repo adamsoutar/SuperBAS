@@ -149,46 +149,77 @@ namespace SuperBAS.Parser
                     Operand = command
                 };
             }
-            else
+
+            IASTNode operand;
+            if (IsNextPunctuation(":") || IsNextPunctuation("\n"))
             {
-                IASTNode operand;
-                if (IsNextPunctuation(":") || IsNextPunctuation("\n"))
+                // Operands are optional for commands like CLS
+                operand = new ASTInvalidNode();
+            } else
+            {
+                operand = ParseExpression();
+                if (IsNextPunctuation(","))
                 {
-                    // Operands are optional for commands like CLS
-                    operand = new ASTInvalidNode();
-                } else
-                {
-                    operand = ParseExpression();
-                    if (IsNextPunctuation(","))
+                    // A tupple command like
+                    // LISTADD myList$, "Hello"
+                    tokenStream.Read();
+
+                    var lst = new List<IASTNode>();
+                    lst.Add(operand);
+
+                    while (true)
                     {
-                        // A tupple command like
-                        // LISTADD myList$, "Hello"
-                        tokenStream.Read();
-
-                        var lst = new List<IASTNode>();
-                        lst.Add(operand);
-
-                        while (true)
+                        lst.Add(ParseExpression());
+                        if (IsNextPunctuation(","))
                         {
-                            lst.Add(ParseExpression());
-                            if (IsNextPunctuation(","))
-                            {
-                                tokenStream.Read();
-                            } else break;
-                        }
-
-                        operand = new ASTCompoundExpression()
-                        {
-                            Expressions = lst.ToArray()
-                        };
+                            tokenStream.Read();
+                        } else break;
                     }
+
+                    operand = new ASTCompoundExpression()
+                    {
+                        Expressions = lst.ToArray()
+                    };
                 }
-                return new ASTCommand()
+            }
+
+            // Function definitions
+            if (((ASTKeyword)command).Keyword == "DEF")
+            {
+                if (operand.Type != ASTNodeType.Binary)
                 {
-                    Command = ((ASTKeyword)command).Keyword,
-                    Operand = operand
+                    Croak("After a DEF statement, a binary statement is required.");
+                }
+                var op = (ASTBinary)operand;
+                // Checks
+                if (op.Operator != "=") Croak("After a DEF statement, an '=' statement is required");
+                if (op.Left.Type != ASTNodeType.Call) Croak("Left hand side of DEF statement must be in Name(arg1, arg2) format");
+
+                var cll = (ASTCall)op.Left;
+                var arguments = new List<ASTVariable>();
+                // All args must be variable names, not just any expression
+                foreach (var arg in cll.Arguments.Expressions)
+                {
+                    if (arg.Type != ASTNodeType.Variable)
+                    {
+                    Croak("Arguments for function definition must be variable names");
+                    }
+                    arguments.Add((ASTVariable)arg);
+                }
+
+                return new ASTFunctionDefinition()
+                {
+                    FunctionName = cll.FunctionName,
+                    Arguments = arguments.ToArray(),
+                    Expression = op.Right
                 };
             }
+
+            return new ASTCommand()
+            {
+                Command = ((ASTKeyword)command).Keyword,
+                Operand = operand
+            };
         }
 
         private bool IsNextKeyword(string keyword)
