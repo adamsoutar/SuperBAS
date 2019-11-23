@@ -40,3 +40,17 @@ new ASTVariable {
 }
 ```
 Seems over the top.
+
+Add `redefinedLoops` option
+```basic
+1 FOR i = 0 TO 5
+2 PRINT i
+3 NEXT i
+
+4 FOR i = 10 TO 1 STEP -1
+5 PRINT i
+6 NEXT i
+```
+Users might expect this to work in SuperBAS, which it won't (due to ambiguous `NEXT i`). Redefined loops would increase runtime overhead with the benefit of making this work (two loops with the same counter variable). Maybe we could auto-enable it if we spot this pattern.
+
+Make executable compilation easier - maybe automate the `dotnet publish` commands. This makes the `.NET Core SDK` a dependency. This will greatly reduce the size of the SuperBAS executable though, since it wouldn't have to be framework-independent.

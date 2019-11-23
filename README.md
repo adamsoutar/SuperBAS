@@ -24,7 +24,7 @@ SuperBAS fixes that! It is designed to match your nostalgia for older BASIC lang
 Download [a release for your platform](https://github.com/adamsoutar/SuperBAS/releases), run it like so:
 
 ```bash
-./SuperBas test.bas Program.cs native
+./SuperBas test.sbas Program.cs native
 ```
 
 You can compile the resulting file on Windows with a command like this (assuming you have VS Build Tools installed):
@@ -36,7 +36,7 @@ csc Output.cs /out:MyProgram.exe /optimize
 or
 
 ```bash
-./SuperBAS test.bas Script.js web
+./SuperBAS test.sbas Script.js web
 ```
 
 *Note: JS transpilation is at a pre-alpha stage*
@@ -45,6 +45,6 @@ or
 
 Using [the spec](https://github.com/adamsoutar/SuperBAS/blob/master/Docs/LanguageSpec.md) to learn SuperBAS is easy. Every command, operator and standard library function is documented with examples.
 
-If you're looking for full examples like FizzBuzz, see [/BasicCode](https://github.com/adamsoutar/SuperBAS/blob/master/BasicCode/FizzBuzz.bas).
+If you're looking for full examples like FizzBuzz, see [/BasicCode](https://github.com/adamsoutar/SuperBAS/blob/master/BasicCode/FizzBuzz.sbas).
 
 Watch out though, it's a little full of test scripts in there.
