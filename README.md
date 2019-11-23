@@ -48,3 +48,7 @@ Using [the spec](https://github.com/adamsoutar/SuperBAS/blob/master/Docs/Languag
 If you're looking for full examples like FizzBuzz, see [/BasicCode](https://github.com/adamsoutar/SuperBAS/blob/master/BasicCode/FizzBuzz.sbas).
 
 Watch out though, it's a little full of test scripts in there.
+
+## Don't like writing in Notepad?
+
+Syntax highlighting is available [here](https://github.com/adamsoutar/vscode-language-superbas) for the [VS Code](https://code.visualstudio.com/) editor
