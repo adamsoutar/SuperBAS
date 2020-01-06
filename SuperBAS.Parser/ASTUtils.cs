@@ -14,7 +14,8 @@ namespace SuperBAS.Parser
         Command,
         InvalidNode,
         For,
-        FunctionDefinition
+        FunctionDefinition,
+        CompileTimeCommand
     }
 
     // Interface for a generic Abstract Syntax Tree node

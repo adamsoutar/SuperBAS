@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using SuperBAS.Parser;
+using System.IO;
 
 namespace SuperBAS.Transpiler.CSharp
 {
@@ -17,6 +18,7 @@ namespace SuperBAS.Transpiler.CSharp
 
     public class TemplateCode
     {
+        public string SourcePath;
         private Action<VarType, string> DefineVar;
         // For complex, operand dependent declarations like maps
         private Action<string> DefineRaw;
@@ -26,9 +28,11 @@ namespace SuperBAS.Transpiler.CSharp
         // Includes Lists, as well as simple vars, arrays and maps
         public List<string> DefinedVars = new List<string>();
         public List<string> DefinedFunctions = new List<string>();
+        public string nativeIncludes = "";
 
-        public TemplateCode(Action<VarType, string> Define, Action<string> Raw)
+        public TemplateCode(string sourcePath, Action<VarType, string> Define, Action<string> Raw)
         {
+            SourcePath = sourcePath;
             DefineVar = Define;
             DefineRaw = Raw;
         }
@@ -242,8 +246,38 @@ namespace SuperBAS.Transpiler.CSharp
             ";
         }
 
+        private void HandleCompileTimeCommand (ASTCompileTimeCommand cTC)
+        {
+            switch (cTC.Command)
+            {
+                case "INCLUDENATIVE":
+                    var includePath = Path.Combine(Path.GetDirectoryName(SourcePath), cTC.Operand);
+                    var sR = new StreamReader(includePath);
+                    var cSCode = sR.ReadToEnd();
+                    sR.Close();
+                    nativeIncludes += cSCode;
+                    break;
+                default:
+                    // Not supported by C# transpiler,
+                    // but don't throw, in case it's eg. 'INCLUDEWEB'
+                    Console.WriteLine($"[info] The {cTC.Command} command isn't supported by the C# transpiler, ignoring");
+                    break;
+            }
+        }
+
         private string GetCodeForCommand(IASTNode command, float lineNumber)
         {
+            if (command.Type == ASTNodeType.CompileTimeCommand)
+            {
+                HandleCompileTimeCommand((ASTCompileTimeCommand)command);
+                return "";
+            }
+
+            if (command.Type == ASTNodeType.Call)
+            {
+                return GetCodeForCall((ASTCall)command) + ";";
+            }
+
             /* This is either a command or a control structure */
             if (command.Type == ASTNodeType.Command)
             {
@@ -517,31 +551,38 @@ namespace SuperBAS.Transpiler.CSharp
             }
             else
             {
-                if (DefinedFunctions.Contains(GetVarName(call.FunctionName, false))) {
-                    // It's a user fn
-                    var fnName = call.FunctionName;
-                    var fnString = $"userFn_{GetVarName(fnName, false)}";
-
-                    var argString = "";
-                    foreach (var arg in call.Arguments.Expressions) {
-                        argString += $"{GetCodeForExpression(arg)},";
-                    }
-                    argString = argString.Substring(0, argString.Length - 1);
-
-                    return $"{fnString}({argString})";
-                }
-
-                var arName = GetVarName(call.FunctionName);
-                var assignCode = $"{arName}[";
-
-                var args = call.Arguments.Expressions;
-                for (int i = 0; i < args.Length; i++)
+                if (DefinedVars.Contains(GetVarName(call.FunctionName, false)))
                 {
-                    assignCode += $"(int)({GetCodeForExpression(args[i])})" +
-                        (i == args.Length - 1 ? "" : ",");
+                    // It's an array
+                    var arName = GetVarName(call.FunctionName);
+                    var assignCode = $"{arName}[";
+
+                    var args = call.Arguments.Expressions;
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        assignCode += $"(int)({GetCodeForExpression(args[i])})" +
+                            (i == args.Length - 1 ? "" : ",");
+                    }
+
+                    return assignCode + ']';
                 }
 
-                return assignCode + ']';
+                // It's a user fn
+                var fnName = call.FunctionName;
+                var fnString = $"userFn_{GetVarName(fnName, false)}";
+
+                var argString = "";
+                foreach (var arg in call.Arguments.Expressions)
+                {
+                    argString += $"{GetCodeForExpression(arg)},";
+                }
+
+                if (argString != "")
+                {
+                    argString = argString.Substring(0, argString.Length - 1);
+                }
+
+                return $"{fnString}({argString})";
             }
         }
 

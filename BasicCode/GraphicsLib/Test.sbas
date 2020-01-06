@@ -1,0 +1,30 @@
+#include "GraphicsLib.sbas"
+
+19 PRINT "Started"
+20 win = GfxNewWindow(1920, 1080, "Window", 0)
+21 clock = GfxNewClock()
+22 size = 0
+23 speed = 5000
+24 goingUp = 1
+
+REM Graphics loop
+
+REM Seconds since last frame (decimal):
+32 deltaTime = GfxRestartClock(clock)
+32.5 GfxHandleEvents(win)
+
+32.7 amnt = deltaTime * speed
+33 IF goingUp = 1 THEN size = size + amnt ELSE size = size - amnt
+
+34 rect = GfxNewRectangle(size, size)
+35 GfxClearWindow(win)
+36 GfxDraw(win, rect)
+REM Free up rect 'cause we don't need it any more
+38 GfxFreeDrawable(rect)
+39 GfxDisplayWindow(win)
+
+40 IF goingUp = 1 THEN IF size > 1080 THEN goingUp = 0
+41 IF goingUp = 0 THEN IF size < 2 THEN goingUp = 1
+
+50 IF GfxWindowIsOpen(win) = 1 THEN GOTO 32
+51 PRINT "Window closed!"

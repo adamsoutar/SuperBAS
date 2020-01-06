@@ -9,6 +9,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
+using SFML.Audio;
+using SFML.Graphics;
+using SFML.System;
+using SFML.Window;
 
 namespace UserProgram
 {

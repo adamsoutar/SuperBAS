@@ -58,19 +58,35 @@ namespace SuperBAS.Parser
                 if (IsNextPunctuation("#"))
                 {
                     tokenStream.Read();
-                    ExpectKeyword("INCLUDE");
 
-                    var path = (Token)tokenStream.Read();
-                    if (path.Type != TokenType.String)
-                        Croak("Include must be a compile-time constant string.");
+                    var ident = (Token)(tokenStream.Read());
+                    var op = (Token)tokenStream.Read();
+                    if (op.Type != TokenType.String)
+                        Croak("# command must be followed");
 
-                    Console.WriteLine($"[info] Including {path.Value}");
+                    switch (ident.Value)
+                    {
+                        case "INCLUDE":
+                            Console.WriteLine($"[info] Including {op.Value}");
 
-                    // Include paths are relative to the original source
-                    var includePath = Path.Combine(Path.GetDirectoryName(SourcePath), path.Value);
-                    var newFileParser = Parser.FromFile(includePath);
-                    foreach (var ast in newFileParser.GenerateAbstractSyntaxTree())
-                        nodes.Add(ast);
+                            // Include paths are relative to the original source
+                            var includePath = Path.Combine(Path.GetDirectoryName(SourcePath), op.Value);
+                            var newFileParser = Parser.FromFile(includePath);
+                            foreach (var ast in newFileParser.GenerateAbstractSyntaxTree())
+                                nodes.Add(ast);
+                            break;
+                        default:
+                            // Pass it on to the transpiler
+                            var nd = new SyntaxTreeTopLevel();
+                            nd.Commands = new List<IASTNode>();
+                            nd.Commands.Add(new ASTCompileTimeCommand()
+                            {
+                                Command = ident.Value,
+                                Operand = op.Value
+                            });
+                            nodes.Add(nd);
+                            break;
+                    }
 
                     continue;
                 }
@@ -133,11 +149,12 @@ namespace SuperBAS.Parser
         {
             var command = ParseExpression();
             if (IsControlStructure(command)) return command;
+            if (command.Type == ASTNodeType.Call) return command;
             if (
                 !IsCommand(command) && !IsAssignment(command)
                )
             {
-                Croak("The token following a line number or : must be a command, assignment or control structure");
+                Croak("The token following a line number or : must be a command, assignment, control structure or call");
             }
 
             // Operand

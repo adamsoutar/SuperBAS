@@ -58,7 +58,7 @@ namespace SuperBAS.Transpiler.CSharp
             parser = Parser.Parser.FromFile(file);
             FinalProgram = Skeleton.Code;
 
-            templater = new TemplateCode(DefineVar, DefineRaw);
+            templater = new TemplateCode(file, DefineVar, DefineRaw);
 
             FinalProgram = FinalProgram.Replace("/*CASES*/",
                 templater.GetCodeForProgram(
@@ -66,7 +66,7 @@ namespace SuperBAS.Transpiler.CSharp
                     )
                 );
             FinalProgram = FinalProgram.Replace("/*DECLARATIONS*/",
-                GetDeclarations()
+                GetDeclarations() + templater.nativeIncludes
                 );
             FinalProgram = FinalProgram.Replace("/*LOWESTLINE*/", templater.LineNumbers[0].ToString());
         }

@@ -1,0 +1,2 @@
+1 DEF Square(x) = x * x
+3 Square(4)

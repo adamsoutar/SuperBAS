@@ -82,4 +82,11 @@ namespace SuperBAS.Parser
         public IASTNode ToMax;
         public IASTNode Step;
     }
+
+    public class ASTCompileTimeCommand : IASTNode
+    {
+        public ASTNodeType Type { get => ASTNodeType.CompileTimeCommand; }
+        public string Command;
+        public string Operand;
+    }
 }
