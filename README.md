@@ -51,4 +51,4 @@ Watch out though, it's a little full of test scripts in there.
 
 ## Don't like writing in Notepad?
 
-Syntax highlighting is available [here](https://github.com/adamsoutar/vscode-language-superbas) for the [VS Code](https://code.visualstudio.com/) editor
+Syntax highlighting is available for [Atom](https://github.com/adamsoutar/atom-language-superbas) and [VS Code](https://github.com/adamsoutar/vscode-language-superbas)
