@@ -1,6 +1,13 @@
 static List<RenderWindow> windows = new List<RenderWindow>();
 static List<Clock> clocks = new List<Clock>();
-static List<Drawable> drawables = new List<Drawable>();
+static List<Sprite> sprites = new List<Sprite>();
+static List<Texture> textures = new List<Texture>();
+
+// Helpers
+static Vector2f vec (double x, double y) {
+  return new Vector2f((float)x, (float)y);
+}
+// End helpers
 
 // Windows
 // TODO: VSync option?
@@ -64,22 +71,63 @@ static double userFn_GFXRESTARTCLOCK_number (double clockId) {
 }
 // End Clocks
 
+// Keyboard
+// TODO: Controllers
+static double userFn_GFXISKEYPRESSED_number (string keyName) {
+  Keyboard.Key k;
+  Enum.TryParse(keyName, out k);
+  return Keyboard.IsKeyPressed(k) ? 1 : 0;
+}
+// End Keyboard
+
 // Drawables
-static double userFn_GFXFREEDRAWABLE_number (double drwId) {
-  drawables[(int)drwId] = null;
+static double userFn_GFXNEWTEXTURE_number (string filePath) {
+  var texId = textures.Count;
+  textures.Add(new Texture(filePath));
+  return texId;
+}
+
+static double userFn_GFXNEWSPRITE_number (double texId) {
+  var sprId = sprites.Count;
+  sprites.Add(new Sprite(textures[(int)texId]));
+  return sprId;
+}
+
+static double userFn_GFXSETSPRITEPOSITION_number (double sprId, double x, double y) {
+  sprites[(int)sprId].Position = vec(x, y);
   return 1;
 }
 
-static double userFn_GFXNEWRECTANGLE_number (double width, double height, double r = 255, double g = 255, double b = 255, double alpha = 255) {
-  var rect = new RectangleShape(new Vector2f((float)width, (float)height));
-  rect.FillColor = new Color((byte)r, (byte)g, (byte)b, (byte)alpha);
-  var drwId = drawables.Count;
-  drawables.Add(rect);
-  return drwId;
+static double userFn_GFXMOVESPRITE_number (double sprId, double x, double y) {
+  sprites[(int)sprId].Position += vec(x, y);
+  return 1;
 }
 
-static double userFn_GFXDRAW_number (double winId, double drwId) {
-  windows[(int)winId].Draw(drawables[(int)drwId]);
+static double userFn_GFXROTATESPRITE_number (double sprId, double angle) {
+  sprites[(int)sprId].Rotation = (float)angle;
+  return 1;
+}
+
+static double userFn_GFXSCALESPRITE_number (double sprId, double x, double y) {
+  sprites[(int)sprId].Scale = vec(x, y);
+  return 1;
+}
+
+static double userFn_GFXGETSPRITEX_number (double sprId) {
+  return (double)(sprites[(int)sprId].Position.X);
+}
+
+static double userFn_GFXGETSPRITEY_number (double sprId) {
+  return (double)(sprites[(int)sprId].Position.Y);
+}
+
+static double userFn_GFXSETSPRITETEXTURE_number (double sprId, double texId) {
+  sprites[(int)sprId].Texture = textures[(int)texId];
+  return 1;
+}
+
+static double userFn_GFXDRAW_number (double winId, double sprId) {
+  windows[(int)winId].Draw(sprites[(int)sprId]);
   return 1;
 }
 // End drawables

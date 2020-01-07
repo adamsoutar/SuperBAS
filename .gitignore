@@ -16,6 +16,8 @@ autom4te.cache/
 tarballs/
 test-results/
 
+mario.png
+
 # Mac bundle stuff
 *.dmg
 *.app

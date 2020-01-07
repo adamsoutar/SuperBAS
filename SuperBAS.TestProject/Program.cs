@@ -18,15 +18,24 @@ namespace UserProgram
         private static int startY;
         private static double WIN_number = 0.0;
 private static double CLOCK_number = 0.0;
-private static double SIZE_number = 0.0;
-private static double SPEED_number = 0.0;
-private static double GOINGUP_number = 0.0;
+private static double MARPNG_number = 0.0;
+private static double MARIO_number = 0.0;
+private static double GRAVITYSPEED_number = 0.0;
+private static double FLOORHEIGHT_number = 0.0;
+private static double MOVESPEED_number = 0.0;
+private static double JUMPSPEED_number = 0.0;
 private static double DELTATIME_number = 0.0;
-private static double AMNT_number = 0.0;
-private static double RECT_number = 0.0;
+private static double JUMPING_number = 0.0;
 static List<RenderWindow> windows = new List<RenderWindow>();
 static List<Clock> clocks = new List<Clock>();
-static List<Drawable> drawables = new List<Drawable>();
+static List<Sprite> sprites = new List<Sprite>();
+static List<Texture> textures = new List<Texture>();
+
+// Helpers
+static Vector2f vec (double x, double y) {
+  return new Vector2f((float)x, (float)y);
+}
+// End helpers
 
 // Windows
 // TODO: VSync option?
@@ -90,22 +99,63 @@ static double userFn_GFXRESTARTCLOCK_number (double clockId) {
 }
 // End Clocks
 
+// Keyboard
+// TODO: Controllers
+static double userFn_GFXISKEYPRESSED_number (string keyName) {
+  Keyboard.Key k;
+  Enum.TryParse(keyName, out k);
+  return Keyboard.IsKeyPressed(k) ? 1 : 0;
+}
+// End Keyboard
+
 // Drawables
-static double userFn_GFXFREEDRAWABLE_number (double drwId) {
-  drawables[(int)drwId] = null;
+static double userFn_GFXNEWTEXTURE_number (string filePath) {
+  var texId = textures.Count;
+  textures.Add(new Texture(filePath));
+  return texId;
+}
+
+static double userFn_GFXNEWSPRITE_number (double texId) {
+  var sprId = sprites.Count;
+  sprites.Add(new Sprite(textures[(int)texId]));
+  return sprId;
+}
+
+static double userFn_GFXSETSPRITEPOSITION_number (double sprId, double x, double y) {
+  sprites[(int)sprId].Position = vec(x, y);
   return 1;
 }
 
-static double userFn_GFXNEWRECTANGLE_number (double width, double height, double r = 255, double g = 255, double b = 255, double alpha = 255) {
-  var rect = new RectangleShape(new Vector2f((float)width, (float)height));
-  rect.FillColor = new Color((byte)r, (byte)g, (byte)b, (byte)alpha);
-  var drwId = drawables.Count;
-  drawables.Add(rect);
-  return drwId;
+static double userFn_GFXMOVESPRITE_number (double sprId, double x, double y) {
+  sprites[(int)sprId].Position += vec(x, y);
+  return 1;
 }
 
-static double userFn_GFXDRAW_number (double winId, double drwId) {
-  windows[(int)winId].Draw(drawables[(int)drwId]);
+static double userFn_GFXROTATESPRITE_number (double sprId, double angle) {
+  sprites[(int)sprId].Rotation = (float)angle;
+  return 1;
+}
+
+static double userFn_GFXSCALESPRITE_number (double sprId, double x, double y) {
+  sprites[(int)sprId].Scale = vec(x, y);
+  return 1;
+}
+
+static double userFn_GFXGETSPRITEX_number (double sprId) {
+  return (double)(sprites[(int)sprId].Position.X);
+}
+
+static double userFn_GFXGETSPRITEY_number (double sprId) {
+  return (double)(sprites[(int)sprId].Position.Y);
+}
+
+static double userFn_GFXSETSPRITETEXTURE_number (double sprId, double texId) {
+  sprites[(int)sprId].Texture = textures[(int)texId];
+  return 1;
+}
+
+static double userFn_GFXDRAW_number (double winId, double sprId) {
+  windows[(int)winId].Draw(sprites[(int)sprId]);
   return 1;
 }
 // End drawables
@@ -120,77 +170,85 @@ static double userFn_GFXDRAW_number (double winId, double drwId) {
                     return;
                 case 0:
 
-goto case 19;
-case 19:
-Console.WriteLine("Started");
-goto case 20;
-case 20:
-WIN_number = userFn_GFXNEWWINDOW_number(1920.0,1080.0,"Window",0.0);
-goto case 21;
-case 21:
+goto case 1;
+case 1:
+WIN_number = userFn_GFXNEWWINDOW_number(640.0,480.0);
+goto case 2;
+case 2:
 CLOCK_number = userFn_GFXNEWCLOCK_number();
-goto case 22;
-case 22:
-SIZE_number = 0.0;
-goto case 23;
-case 23:
-SPEED_number = 5000.0;
-goto case 24;
-case 24:
-GOINGUP_number = 1.0;
-goto case 32;
-case 32:
+goto case 3;
+case 3:
+MARPNG_number = userFn_GFXNEWTEXTURE_number("/Users/adam/Documents/Mac Projects/SuperBAS/BasicCode/GraphicsLib/mario.png");
+goto case 4;
+case 4:
+MARIO_number = userFn_GFXNEWSPRITE_number(MARPNG_number);
+goto case 5;
+case 5:
+GRAVITYSPEED_number = 500.0;
+goto case 6;
+case 6:
+userFn_GFXSETSPRITEPOSITION_number(MARIO_number,0.0,0.0);
+goto case 7;
+case 7:
+userFn_GFXSCALESPRITE_number(MARIO_number,0.1,0.1);
+goto case 8;
+case 8:
+FLOORHEIGHT_number = 100.0;
+goto case 9;
+case 9:
+MOVESPEED_number = 400.0;
+goto case 10;
+case 10:
+JUMPSPEED_number = 700.0;
+goto case 100;
+case 100:
 DELTATIME_number = userFn_GFXRESTARTCLOCK_number(CLOCK_number);
-goto case 32.5;
-case 32.5:
+goto case 101;
+case 101:
 userFn_GFXHANDLEEVENTS_number(WIN_number);
-goto case 32.7;
-case 32.7:
-AMNT_number = (DELTATIME_number * SPEED_number);
-goto case 33;
-case 33:
-if ((GOINGUP_number == 1.0)) { SIZE_number = (SIZE_number + AMNT_number);
- } else {
-SIZE_number = (SIZE_number - AMNT_number);
-}
-goto case 34;
-case 34:
-RECT_number = userFn_GFXNEWRECTANGLE_number(SIZE_number,SIZE_number);
-goto case 35;
-case 35:
+goto case 102;
+case 102:
 userFn_GFXCLEARWINDOW_number(WIN_number);
-goto case 36;
-case 36:
-userFn_GFXDRAW_number(WIN_number,RECT_number);
-goto case 38;
-case 38:
-userFn_GFXFREEDRAWABLE_number(RECT_number);
-goto case 39;
-case 39:
+goto case 103;
+case 103:
+JUMPING_number = userFn_GFXISKEYPRESSED_number("Up");
+goto case 104;
+case 104:
+if ((userFn_GFXGETSPRITEY_number(MARIO_number) < 390.0)) { if ((JUMPING_number < 1.0)) { userFn_GFXMOVESPRITE_number(MARIO_number,0.0,(GRAVITYSPEED_number * DELTATIME_number));
+ } else {
+}
+ } else {
+}
+goto case 105;
+case 105:
+if ((userFn_GFXISKEYPRESSED_number("Right") > 0.0)) { userFn_GFXMOVESPRITE_number(MARIO_number,(MOVESPEED_number * DELTATIME_number),0.0);
+ } else {
+}
+goto case 106;
+case 106:
+if ((userFn_GFXISKEYPRESSED_number("Left") > 0.0)) { userFn_GFXMOVESPRITE_number(MARIO_number,(0.0 - (MOVESPEED_number * DELTATIME_number)),0.0);
+ } else {
+}
+goto case 107;
+case 107:
+if ((JUMPING_number > 0.0)) { userFn_GFXMOVESPRITE_number(MARIO_number,0.0,(0.0 - (JUMPSPEED_number * DELTATIME_number)));
+ } else {
+}
+goto case 110;
+case 110:
+userFn_GFXDRAW_number(WIN_number,MARIO_number);
+goto case 111;
+case 111:
 userFn_GFXDISPLAYWINDOW_number(WIN_number);
-goto case 40;
-case 40:
-if ((GOINGUP_number == 1.0)) { if ((SIZE_number > 1080.0)) { GOINGUP_number = 0.0;
- } else {
-}
- } else {
-}
-goto case 41;
-case 41:
-if ((GOINGUP_number == 0.0)) { if ((SIZE_number < 2.0)) { GOINGUP_number = 1.0;
- } else {
-}
- } else {
-}
-goto case 50;
-case 50:
-if ((userFn_GFXWINDOWISOPEN_number(WIN_number) == 1.0)) { lineNumber = 32.0;
+goto case 200;
+case 200:
+if ((userFn_GFXWINDOWISOPEN_number(WIN_number) > 0.0)) { lineNumber = 100.0;
  goto GosubStart;
  } else {
 }
-goto case 51;
-case 51:
-Console.WriteLine("Window closed!");
+goto case 201;
+case 201:
+Console.WriteLine("Game Exited");
 goto case -1;
 
                 default:
