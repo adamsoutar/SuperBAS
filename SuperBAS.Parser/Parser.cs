@@ -438,8 +438,8 @@ namespace SuperBAS.Parser
                     {
                         Operator = op.Value,
                         Left = left,
-                        Right = MightBeCall(MightBeBinary(ParseAtom(), theirPrecedence))
-                    }, myPrecedence);
+                        Right = MightBeBinary(MightBeCall(ParseAtom()), theirPrecedence)
+                    }, myPrecedence) ;
                 }
             }
             return left;

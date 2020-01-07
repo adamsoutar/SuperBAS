@@ -13,7 +13,7 @@ namespace SuperBAS
             Autoupdater.UpdateIfAvailable();
 
             string file;
-            string output = "./Output.cs";
+            string output;
 
             if (args.Length == 0)
             {
@@ -22,11 +22,12 @@ namespace SuperBAS
             }
             else file = args[0];
 
-            if (args.Length > 1)
+            if (args.Length < 2)
             {
-                output = args[1];
+                Console.WriteLine("Output file name:");
+                output = Console.ReadLine();
             }
-            else Console.WriteLine($"[warn] No output filename provided, defaulting");
+            else output = args[1];
 
             if (args.Length > 2 && args[2] == "web")
             {
