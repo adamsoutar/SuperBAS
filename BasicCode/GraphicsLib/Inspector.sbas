@@ -1,0 +1,28 @@
+#include "GraphicsLib.sbas"
+
+REM Menu
+500 PRINT "What would you like to inspect?"
+501 PRINT " 1) Axe"
+502 PRINT " 2) Coin"
+503 PRINT " 3) Torch"
+504 INPUT num$
+505 num = VAL(num$)
+506 IF num > 3 THEN GOTO 500
+507 IF num < 1 THEN GOTO 500
+508 PRINT "You're inspecting an object..."
+509 image$ = "/Users/adam/i" + num + ".png"
+510 GOTO 1000
+
+REM Setup window
+1000 win = GfxNewWindow(512, 512)
+1001 tex = GfxNewTexture(image$)
+1002 sprite = GfxNewSprite(tex)
+1004 GfxClearWindow(win)
+1005 GfxDraw(win, sprite)
+1006 GfxDisplayWindow(win)
+REM Loop
+1007 IF GfxWindowIsOpen(win) > 0 THEN GfxHandleEvents() : GOTO 1007
+REM Loop end
+1008 PRINT "You closed the inspection window"
+1009 PRINT ""
+1010 GOTO 500

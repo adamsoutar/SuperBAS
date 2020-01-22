@@ -108,8 +108,19 @@ static double userFn_GFXROTATESPRITE_number (double sprId, double angle) {
   return 1;
 }
 
-static double userFn_GFXSCALESPRITE_number (double sprId, double x, double y) {
+// In scaleFactor of original texture size
+static double userFn_GFXSETSPRITESIZERELATIVE_number (double sprId, double x, double y) {
   sprites[(int)sprId].Scale = vec(x, y);
+  return 1;
+}
+
+// In pixels
+static double userFn_GFXSETSPRITESIZEABSOLUTE_number (double sprId, double x, double y) {
+  var sp = sprites[(int)sprId];
+  var vc = vec(x, y);
+  var sfX = x / sp.GetLocalBounds().Width;
+  var sfY = y / sp.GetLocalBounds().Height;
+  sp.Scale = vec(sfX, sfY);
   return 1;
 }
 

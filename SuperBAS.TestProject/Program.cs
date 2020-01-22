@@ -16,16 +16,12 @@ namespace UserProgram
         private static Random rand;
         private static int startX;
         private static int startY;
-        private static double WIN_number = 0.0;
-private static double CLOCK_number = 0.0;
-private static double MARPNG_number = 0.0;
-private static double MARIO_number = 0.0;
-private static double GRAVITYSPEED_number = 0.0;
-private static double FLOORHEIGHT_number = 0.0;
-private static double MOVESPEED_number = 0.0;
-private static double JUMPSPEED_number = 0.0;
-private static double DELTATIME_number = 0.0;
-private static double JUMPING_number = 0.0;
+        private static string NUM_string = "";
+private static string IMAGE_string = "";
+private static double NUM_number = 0.0;
+private static double WIN_number = 0.0;
+private static double TEX_number = 0.0;
+private static double SPRITE_number = 0.0;
 static List<RenderWindow> windows = new List<RenderWindow>();
 static List<Clock> clocks = new List<Clock>();
 static List<Sprite> sprites = new List<Sprite>();
@@ -136,8 +132,19 @@ static double userFn_GFXROTATESPRITE_number (double sprId, double angle) {
   return 1;
 }
 
-static double userFn_GFXSCALESPRITE_number (double sprId, double x, double y) {
+// In scaleFactor of original texture size
+static double userFn_GFXSETSPRITESIZERELATIVE_number (double sprId, double x, double y) {
   sprites[(int)sprId].Scale = vec(x, y);
+  return 1;
+}
+
+// In pixels
+static double userFn_GFXSETSPRITESIZEABSOLUTE_number (double sprId, double x, double y) {
+  var sp = sprites[(int)sprId];
+  var vc = vec(x, y);
+  var sfX = x / sp.GetLocalBounds().Width;
+  var sfY = y / sp.GetLocalBounds().Height;
+  sp.Scale = vec(sfX, sfY);
   return 1;
 }
 
@@ -170,85 +177,81 @@ static double userFn_GFXDRAW_number (double winId, double sprId) {
                     return;
                 case 0:
 
-goto case 1;
-case 1:
-WIN_number = userFn_GFXNEWWINDOW_number(640.0,480.0);
-goto case 2;
-case 2:
-CLOCK_number = userFn_GFXNEWCLOCK_number();
-goto case 3;
-case 3:
-MARPNG_number = userFn_GFXNEWTEXTURE_number("/Users/adam/Documents/Mac Projects/SuperBAS/BasicCode/GraphicsLib/mario.png");
-goto case 4;
-case 4:
-MARIO_number = userFn_GFXNEWSPRITE_number(MARPNG_number);
-goto case 5;
-case 5:
-GRAVITYSPEED_number = 500.0;
-goto case 6;
-case 6:
-userFn_GFXSETSPRITEPOSITION_number(MARIO_number,0.0,0.0);
-goto case 7;
-case 7:
-userFn_GFXSCALESPRITE_number(MARIO_number,0.1,0.1);
-goto case 8;
-case 8:
-FLOORHEIGHT_number = 100.0;
-goto case 9;
-case 9:
-MOVESPEED_number = 400.0;
-goto case 10;
-case 10:
-JUMPSPEED_number = 700.0;
-goto case 100;
-case 100:
-DELTATIME_number = userFn_GFXRESTARTCLOCK_number(CLOCK_number);
-goto case 101;
-case 101:
-userFn_GFXHANDLEEVENTS_number(WIN_number);
-goto case 102;
-case 102:
-userFn_GFXCLEARWINDOW_number(WIN_number);
-goto case 103;
-case 103:
-JUMPING_number = userFn_GFXISKEYPRESSED_number("Up");
-goto case 104;
-case 104:
-if ((userFn_GFXGETSPRITEY_number(MARIO_number) < 390.0)) { if ((JUMPING_number < 1.0)) { userFn_GFXMOVESPRITE_number(MARIO_number,0.0,(GRAVITYSPEED_number * DELTATIME_number));
- } else {
-}
- } else {
-}
-goto case 105;
-case 105:
-if ((userFn_GFXISKEYPRESSED_number("Right") > 0.0)) { userFn_GFXMOVESPRITE_number(MARIO_number,(MOVESPEED_number * DELTATIME_number),0.0);
- } else {
-}
-goto case 106;
-case 106:
-if ((userFn_GFXISKEYPRESSED_number("Left") > 0.0)) { userFn_GFXMOVESPRITE_number(MARIO_number,(0.0 - (MOVESPEED_number * DELTATIME_number)),0.0);
- } else {
-}
-goto case 107;
-case 107:
-if ((JUMPING_number > 0.0)) { userFn_GFXMOVESPRITE_number(MARIO_number,0.0,(0.0 - (JUMPSPEED_number * DELTATIME_number)));
- } else {
-}
-goto case 110;
-case 110:
-userFn_GFXDRAW_number(WIN_number,MARIO_number);
-goto case 111;
-case 111:
-userFn_GFXDISPLAYWINDOW_number(WIN_number);
-goto case 200;
-case 200:
-if ((userFn_GFXWINDOWISOPEN_number(WIN_number) > 0.0)) { lineNumber = 100.0;
+goto case 500;
+case 500:
+Console.WriteLine("What would you like to inspect?");
+goto case 501;
+case 501:
+Console.WriteLine(" 1) Axe");
+goto case 502;
+case 502:
+Console.WriteLine(" 2) Coin");
+goto case 503;
+case 503:
+Console.WriteLine(" 3) Torch");
+goto case 504;
+case 504:
+NUM_string = Console.ReadLine();
+goto case 505;
+case 505:
+NUM_number = double.Parse(NUM_string);
+goto case 506;
+case 506:
+if ((NUM_number > 3.0)) { lineNumber = 500.0;
  goto GosubStart;
  } else {
 }
-goto case 201;
-case 201:
-Console.WriteLine("Game Exited");
+goto case 507;
+case 507:
+if ((NUM_number < 1.0)) { lineNumber = 500.0;
+ goto GosubStart;
+ } else {
+}
+goto case 508;
+case 508:
+Console.WriteLine("You're inspecting an object...");
+goto case 509;
+case 509:
+IMAGE_string = (("/Users/adam/i" + NUM_number) + ".png");
+goto case 510;
+case 510:
+lineNumber = 1000.0;
+ goto GosubStart;
+goto case 1000;
+case 1000:
+WIN_number = userFn_GFXNEWWINDOW_number(512.0,512.0);
+goto case 1001;
+case 1001:
+TEX_number = userFn_GFXNEWTEXTURE_number(IMAGE_string);
+goto case 1002;
+case 1002:
+SPRITE_number = userFn_GFXNEWSPRITE_number(TEX_number);
+goto case 1004;
+case 1004:
+userFn_GFXCLEARWINDOW_number(WIN_number);
+goto case 1005;
+case 1005:
+userFn_GFXDRAW_number(WIN_number,SPRITE_number);
+goto case 1006;
+case 1006:
+userFn_GFXDISPLAYWINDOW_number(WIN_number);
+goto case 1007;
+case 1007:
+if ((userFn_GFXWINDOWISOPEN_number(WIN_number) > 0.0)) { userFn_GFXHANDLEEVENTS_number();
+lineNumber = 1007.0;
+ goto GosubStart;
+ } else {
+}
+goto case 1008;
+case 1008:
+Console.WriteLine("You closed the inspection window");
+goto case 1009;
+case 1009:
+Console.WriteLine("");
+goto case 1010;
+case 1010:
+lineNumber = 500.0;
+ goto GosubStart;
 goto case -1;
 
                 default:

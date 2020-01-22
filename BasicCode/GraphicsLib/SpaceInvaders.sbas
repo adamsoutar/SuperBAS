@@ -1,0 +1,157 @@
+#include "GraphicsLib.sbas"
+
+REM Set up window
+0.5 winWidth = 1024
+0.55 winHeight = 768
+1 win = GfxNewWindow(winWidth, winHeight)
+2 clock = GfxNewClock()
+
+REM Set up vars
+5 playerSpeed = 500
+6 bulletX = 0-1
+7 bulletY = 0-1
+8 bulletSpeed = 500
+
+REM Load images
+10 texSi1 = GfxNewTexture("/Users/adam/SI1.png")
+11 texSi2 = GfxNewTexture("/Users/adam/SI2.png")
+12 texSiPlayer = GfxNewTexture("/Users/adam/SIPlayer.png")
+13 texSiBullet = GfxNewTexture("/Users/adam/SIBullet.png")
+
+REM Set up sprites
+20 player = GfxNewSprite(texSiPlayer)
+21 GfxSetSpriteSizeAbsolute(player, 100, 64)
+22 GfxSetSpritePosition(player, 462, 684)
+23 bullet = GfxNewSprite(texSiBullet)
+24 GfxSetSpriteSizeAbsolute(bullet, 8, 14)
+
+REM Enemy setup
+28 goingBack = 0
+29 enemyLeft = 0
+29.05 enemyTop = 0
+29.1 enemyGuttering = 20
+REM Ammnt of possible x positions for space invaders
+29.2 enemyMoveIncrement = 30
+29.21 eMoveAmnt = winWidth / enemyMoveIncrement
+REM Amnt of possible y positions for space invaders
+29.22 enemyIncroachIncrement = 30
+29.23 eIncroachAmnt = winHeight / enemyIncroachIncrement
+REM Used to time when to move enemies without SLEEPing
+29.3 eTimer = 0
+REM # of seconds to move after
+29.4 eTimerMax = 0.8
+29.5 eTimerMin = 0.03
+REM Enemy rows
+30 eRows = 4
+REM Enemy columns
+31 eCols = 6
+31.5 eTimerChange = (eTimerMax - eTimerMin) / (eCols * eRows)
+31.6 PRINT eTimerChange
+32 DIM enemies(eCols, eRows)
+
+REM Populate enemy map
+33 FOR eX = 0 TO eCols - 1
+34  FOR eY = 0 TO eRows - 1
+35    enemies(eX, eY) = GfxNewSprite(texSi1)
+36    GfxSetSpriteSizeAbsolute(enemies(eX, eY), 85, 64)
+37  NEXT eY
+38 NEXT eX
+
+REM --= MAIN LOOP - Draws frames =--
+100 deltaTime = GfxRestartClock(clock)
+101 GfxHandleEvents(win)
+102 GfxClearWindow(win)
+
+REM Input
+199 moveAmnt = playerSpeed * deltaTime
+200 IF GfxIsKeyPressed("Left") > 0 THEN IF GfxGetSpriteX(player) > 0 THEN GfxMoveSprite(player, 0 - moveAmnt, 0)
+201 IF GfxIsKeyPressed("Right") > 0 THEN IF GfxGetSpriteX(player) < 924 THEN GfxMoveSprite(player, moveAmnt, 0)
+202 IF GfxIsKeyPressed("Space") > 0 THEN IF bulletY < 0 THEN bulletX = GfxGetSpriteX(player) + 46 : bulletY = GfxGetSpriteY(player) + 39
+
+REM Moving bullets
+211 bulletY = bulletY - bulletSpeed * deltaTime
+210 IF bulletY < 0 THEN GOTO 250
+213 GfxSetSpritePosition(bullet, bulletX, bulletY)
+214 GfxDraw(win, bullet)
+
+REM Enemies
+REM Bullet collision
+249 GOSUB 500
+250 eTimer = eTimer + deltaTime
+251 IF eTimer < eTimerMax THEN GOTO 270
+REM eTimer has expired, we need to move the enemies
+252 eTimer = 0
+253 IF goingBack > 0 THEN enemyLeft = enemyLeft - 1 ELSE enemyLeft = enemyLeft + 1
+REM Enemy animation
+254 FOR aX = 0 TO eCols -1
+255   FOR aY = 0 TO eRows - 1
+255.5   IF enemies(aX, aY) < 0 THEN GOTO 258
+256     IF enemyLeft MOD 2 = 0 THEN animTex = texSi1 ELSE animTex = texSi2
+257     GfxSetSpriteTexture(enemies(aX, aY), animTex)
+258   NEXT aY
+259 NEXT aX
+
+REM Enemy formation
+REM Direction calculation (screen edge collision)
+269 GOSUB 350
+REM Drawing
+270 left = enemyLeft * eMoveAmnt
+270.5 top = enemyTop * eIncroachAmnt
+271 FOR rX = 0 TO eCols - 1
+272   FOR rY = 0 TO eRows - 1
+273     IF enemies(rX, rY) < 0 THEN GOTO 278
+274     thisLeft = left + (85 + enemyGuttering) * rX
+275     thisTop = top + (64 + enemyGuttering) * rY
+276     GfxSetSpritePosition(enemies(rX, rY), thisLeft, thisTop)
+277     GfxDraw(win, enemies(rX, rY))
+278   NEXT rY
+279 NEXT rX
+
+290 GfxDraw(win, player)
+291 GfxDisplayWindow(win)
+
+300 IF GfxWindowIsOpen(win) > 0 THEN GOTO 100
+REM --= END MAIN LOOP =--
+
+REM Calculates if enemies should go down a row/go backwards
+REM We need to know how many enemies columns are fully dead
+REM TODO: This is wrong if the left most row is dead
+REM 309 IF enemyLeft < 0 THEN enemyLeft = 0 : enemyTop = enemyTop + 1 : goingBack = 0 : RETURN
+
+350 IF goingBack < 1 THEN GOTO 400
+351 lowest = 0-1
+352 FOR lX = 0 TO eCols-1
+353   FOR lY = 0 TO eRows-1
+354     IF enemies(eCols - 1 - lX, lY) >= 0 THEN lowest = eCols - 1 - lX
+355   NEXT lY
+356 NEXT lX
+356.5 IF lowest < 0 THEN PRINT "GAME OVER" : EXIT
+357 lowLeft = enemyLeft * eMoveAmnt + (85 + enemyGuttering) * lowest
+358 IF lowLeft <= 0 THEN enemyTop = enemyTop + 1 : goingBack = 0 : enemyLeft = enemyLeft + 1
+359 RETURN
+
+400 highest = 0-1
+401 FOR hX = 0 TO eCols - 1
+402   FOR hY = 0 TO eRows - 1
+403     IF enemies(hX, hY) >= 0 THEN highest = hX
+404   NEXT hY
+405 NEXT hX
+406 IF highest < 0 THEN PRINT "GAME OVER" : EXIT
+407 left = enemyLeft * eMoveAmnt + (85 + enemyGuttering) * (highest + 1)
+408 IF left > winWidth THEN enemyTop = enemyTop + 1 : goingBack = 1 : enemyLeft = enemyLeft - 1
+409 RETURN
+
+REM Bullet collision
+500 FOR bX = 0 TO eCols - 1
+501   FOR bY = 0 TO eRows - 1
+REM Don't check collision for dead enemies
+501.5   IF enemies(bX, bY) < 0 THEN GOTO 507
+REM 'thisLeftMin', 'thisTopMax' etc.
+502     tLMin = enemyLeft * eMoveAmnt + (85 + enemyGuttering) * bX
+503     tLMax = tLMin + 85
+504     tTMin = enemyTop * eIncroachAmnt + (64 + enemyGuttering) * bY
+505     tTMax = tTMin + 64
+506     IF bulletX > tLMin THEN IF bulletX < tLMax THEN IF bulletY > tTMin THEN IF bulletY < tTMax THEN enemies(bX, bY) = 0-1 : bulletX = 0-1 : bulletY = 0-1 : eTimerMax = eTimerMax - eTimerChange
+507   NEXT bY
+508 NEXT bX
+509 RETURN
