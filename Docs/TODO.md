@@ -2,29 +2,25 @@
 
 *It's like a consortium... of me... the only contributor*
 
-~~`!=` should also be aliased with `<>`~~
+Ideally, transpiling to new languages could be done with a config ie. JSON file.
+Like, "this is what a definition looks like in C#", "this is the skeleton for JS"
+
+Compilation targets I'd like to have via new config system:
+ - JavaScript
+ - C#
+ - go
+ - C++/Rust?
+ - Python?
 
 `;` should prevent `\n` in `PRINT`
 
-~~Capitalisation should not be enforced on keywords or variables~~, capitalisation for variables should be a config option.
-
-~~`:` should allow multi-line `IF`~~
-
-~~First reference to var should initialise it.~~
+Capitalisation for variables should be a config option.
 
 Should be able to assign with `LIST` and `DIM` statements
-
-~~Arrays of string and uninitialised string (`LET a$`) vars should be `""` NOT `null`.~~
-
-~~`INT` should be an alias for `FLOOR`~~
 
 Can we make the transpiler croak tell you what line failed? It gives you absolutely 0 context rn.
 
 Make transpilers inherit from an abstract class that implements croak + Parser AST loading
-
-~~User functions~~
-
-~~REM/Comments~~
 
 When jumping to a line that is out of bounds, we should continue execution from the next valid line
 

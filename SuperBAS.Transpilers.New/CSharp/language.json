@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "name": "C#",
+    "filetype": ".cs"
+  },
+  "injectionPoints": {
+    "declarations": "/*DECLARATIONS*/",
+    "code": "/*CASES*/",
+    "lowestLine": "/*LOWESTLINE*/"
+  },
+  "snippets": {
+    "cases": "case %?!:",
+    "endCase": "goto case %?!;",
+
+    "print": "Console.WriteLine(%?!);",
+    "cls": "Console.Clear()",
+    "goto": "lineNumber = %?!; goto GosubStart;",
+    "gosub": "Gosub(%?!);",
+    "return": "return;",
+    "sleep": "Thread.Sleep(%?!);",
+
+    "next": "%?! += %?!; if (%?!) { skip%?!_bool = true; %?! }",
+    "ink": "Console.ForegroundColor = (ConsoleColor)(%?!);",
+    "paper": "Console.BackgroundColor = (ConsoleColor)(%?!);",
+    "exit": "Environment.Exit(0);",
+    "stop": "Console.ReadKey(); Environment.Exit(0)",
+    "waitkey": "Console.ReadKey();",
+  }
+}
