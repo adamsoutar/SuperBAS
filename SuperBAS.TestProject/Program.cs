@@ -9,8 +9,7 @@ namespace UserProgram
     class Program
     {
         private static Random rand;
-        private static string NAME_string = "";
-
+        
 
         static void Gosub(double lineNumber)
         {
@@ -19,8 +18,8 @@ namespace UserProgram
             {
                 case -1:
                     return;
-                case 1:Console.WriteLine("What's your name?");NAME_string = Console.ReadLine();
-goto case 2;case 2:Console.WriteLine((("Hello, " + NAME_string) + "!"));
+                case 1:WriteAllFile("hello.txt", "Hello, ", false);
+goto case 2;case 2:WriteAllFile("hello.txt", "World!", true);
 goto case -1;
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");
@@ -39,6 +38,12 @@ goto case -1;
             var s = sr.ReadToEnd();
             sr.Close();
             return s;
+        }
+
+        static void WriteAllFile (string flName, string contents, bool append) {
+            var sw = new StreamWriter(flName, append);
+            sw.Write(contents);
+            sw.Close();
         }
     }
 }

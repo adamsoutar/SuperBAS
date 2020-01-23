@@ -37,5 +37,11 @@ namespace UserProgram
             sr.Close();
             return s;
         }
+
+        static void WriteAllFile (string flName, string contents, bool append) {
+            var sw = new StreamWriter(flName, append);
+            sw.Write(contents);
+            sw.Close();
+        }
     }
 }

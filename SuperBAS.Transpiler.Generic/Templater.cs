@@ -104,14 +104,33 @@ Target: {Target.Config["meta"]["name"]}
                         return Target.GetSnippet("commands", "waitkey");
                     case "INPUT":
                         return GetCodeForInput(cmd.Operand);
-                    // WRITEFILE
-                    // APPENDFILE
+                    case "WRITEFILE":
+                        return GetCodeForFileWrite(cmd);
+                    case "APPENDFILE":
+                        return GetCodeForFileWrite(cmd);
                     default:
-                        return Croak($"Unsupported command \"{cmd.Command}\"");
+                        return Croak($@"
+Unsupported command ""{cmd.Command}""
+It's a valid command, but not yet implemented in the new transpiler.
+");
                 }
             }
 
             return Croak("Unsupported AST Node in new transpiler.");
+        }
+
+        public string GetCodeForFileWrite (ASTCommand cmd)
+        {
+            var type = cmd.Command.ToLower();
+            var ops = ((ASTCompoundExpression)cmd.Operand).Expressions;
+            var fileName = GetCodeForExpression(ops[0]);
+            var contents = GetCodeForExpression(ops[1]);
+
+            return Target.GetComplexSnippet("commands", type, new Dictionary<string, string>()
+            {
+                { "fileName", fileName },
+                { "contents", contents }
+            });
         }
 
         public string GetCodeForInput (IASTNode op)

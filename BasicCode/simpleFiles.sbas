@@ -1,0 +1,2 @@
+1 WRITEFILE "hello.txt", "Hello, "
+2 APPENDFILE "hello.txt", "World!"
