@@ -32,8 +32,11 @@ namespace SuperBAS
 
             var configFolder = "/Users/adam/Documents/Mac Projects/SuperBAS/SuperBAS.Transpiler.Configs/CSharp";
             var target = TargetLanguage.FromDirectory(configFolder);
+            Console.WriteLine($"[info] Target language: {target.Config["meta"]["name"]}");
             var transpiler = new Transpiler.Generic.Transpiler(file, target);
+            Console.WriteLine("[info] Transpiled! Saving.");
 
+            transpiler.SaveTo(output);
         }
     }
 }

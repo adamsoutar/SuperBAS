@@ -18,23 +18,20 @@ namespace UserProgram
             {
                 case -1:
                     return;
-                /*CASES*/
+                /*BODY*/
                 default:
-                    throw new Exception($""Invalid GOTO { lineNumber } - Not a line"");
+                    throw new Exception($"Invalid GOTO { lineNumber } - Not a line");
             }
         }
 
         static void Main(string[] args)
         {
-            Console.Clear();
-            startX = Console.CursorLeft;
-            startY = Console.CursorTop;
             Gosub(/*LOWESTLINE*/);
         }
 
         static string ReadAllFile (string flName) {
             // Read an entire file to a string
-            // Put into a function for use in expressions
+            // Put into a function for use in WRITEFILE command
             var sr = new StreamReader(flName);
             var s = sr.ReadToEnd();
             sr.Close();

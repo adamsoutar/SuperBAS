@@ -28,16 +28,36 @@ namespace SuperBAS.Transpiler.Generic
             return p;
         }
 
-        public string GetSnippet (string type, string name, Dictionary<string, string> replacements)
+        public string CodeGen (string declarations, string body, string lowestLine)
+        {
+            var s = Skeleton;
+            var iD = GetSnippet("injectionPoints", "declarations");
+            var iB = GetSnippet("injectionPoints", "body");
+            var iL = GetSnippet("injectionPoints", "lowestLine");
+            s = s.Replace(iD, declarations);    
+            s = s.Replace(iB, body);
+            s = s.Replace(iL, lowestLine);
+            return s;
+        }
+
+        public string GetComplexSnippet (string type, string name, Dictionary<string, string> replacements)
         {
             var snip = (string)Config["snippets"][type][name];
 
             foreach (var r in replacements)
             {
-                snip.Replace($"%{r.Key}%", r.Value);
+                snip = snip.Replace($"%{r.Key}%", r.Value);
             }
 
             return snip;
+        }
+
+        // Gets a snippet with only one replacement
+        public string GetSnippet (string type, string name, string toReplace = "", string value = "")
+        {
+            var reps = new Dictionary<string, string>();
+            reps.Add(toReplace, value);
+            return GetComplexSnippet(type, name, reps);
         }
     }
 }

@@ -3,16 +3,13 @@
     "name": "C#",
     "filetype": ".cs"
   },
-  "injectionPoints": {
-    "declarations": "/*DECLARATIONS*/",
-    "code": "/*CASES*/",
-    "lowestLine": "/*LOWESTLINE*/"
-  },
   "snippets": {
+    "injectionPoints": {
+      "declarations": "/*DECLARATIONS*/",
+      "body": "/*BODY*/",
+      "lowestLine": "/*LOWESTLINE*/"
+    },
     "commands": {
-      "cases": "case %lineNumber%:",
-      "endCase": "goto case %nextLine%;",
-
       "print": "Console.WriteLine(%text%);",
       "cls": "Console.Clear()",
       "goto": "lineNumber = %lineNumber%; goto GosubStart;",
@@ -25,7 +22,17 @@
       "paper": "Console.BackgroundColor = (ConsoleColor)(%colour%);",
       "exit": "Environment.Exit(0);",
       "stop": "Console.ReadKey(); Environment.Exit(0)",
-      "waitkey": "Console.ReadKey();",
+      "waitkey": "Console.ReadKey();"
+    },
+    "cases": {
+      "cases": "case %lineNumber%:",
+      "endCase": "goto case %nextLine%;"
+    },
+    "operators": {
+      "+": "(%a% + %b%)",
+      "-": "(%a% - %b%)",
+      "*": "(%a% * %b%)",
+      "/": "(%a% / %b%)"
     },
     "expressions": {
       "string": "\"%value%\"",

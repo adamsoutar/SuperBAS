@@ -15,7 +15,9 @@ namespace SuperBAS.Transpiler.Generic
         {
             Target = transpilerTarget;
             parser = Parser.Parser.FromFile(file);
-            // TODO: Populate OutputCode
+            templater = new Templater(Target, parser);
+
+            OutputCode = templater.GetFullProgramCode();
         }
 
         public void SaveTo (string file) {
