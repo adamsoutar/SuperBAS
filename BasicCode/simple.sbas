@@ -1,2 +1,2 @@
 1 PRINT "Hello, world!"
-2 PRINT 5.5
+2 PRINT 1 + 1

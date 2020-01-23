@@ -19,7 +19,7 @@ namespace UserProgram
                 case -1:
                     return;
                 case 1:Console.WriteLine("Hello, world!");
-goto case 2;case 2:Console.WriteLine((double)(5.5));
+goto case 2;case 2:Console.WriteLine(((double)(1) + (double)(1)));
 goto case -1;
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");
