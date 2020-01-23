@@ -47,5 +47,33 @@ goto case -1;
             sw.Write(contents);
             sw.Close();
         }
+
+        public double GetLength<T> (T thing)
+        {
+            // Get the length of anything.
+            // This allows one LEN() method for lists, arrays and strings
+            if (thing is List<string> lS)
+            {
+                return lS.Count;
+            }
+            if (thing is List<double> lD)
+            {
+                return lD.Count;
+            }
+            if (thing is string s)
+            {
+                return s.Length;
+            }
+            if (thing is string[] sA)
+            {
+                return sA.Length;
+            }
+            if (thing is double[] dA)
+            {
+                return dA.Length;
+            }
+
+            throw new Exception("SuperBAS cannot get the length of that object.");
+        }
     }
 }

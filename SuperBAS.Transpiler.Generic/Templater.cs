@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using SuperBAS.Parser;
 
 namespace SuperBAS.Transpiler.Generic

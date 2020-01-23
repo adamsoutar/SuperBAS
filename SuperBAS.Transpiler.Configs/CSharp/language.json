@@ -28,6 +28,21 @@
       "writefile": "WriteAllFile(%fileName%, %contents%, false);",
       "appendfile": "WriteAllFile(%fileName%, %contents%, true);"
     },
+    "stdLib": {
+      "str": "(%val%).ToString()",
+      "val": "double.Parse(%val%)",
+      "sin": "Math.Sin(%val%)",
+      "cos": "Math.Cos(%val%)",
+      "tan": "Math.Tan(%val%)",
+      "floor": "Math.Floor(%val%)",
+      "ceil": "Math.Ceiling(%val%)",
+      "random": "rand.NextDouble()",
+      "round": "Math.Round(%val%, %dps%)",
+      "readfile": "ReadAllFile(%val%)",
+      "split": "(%val%).Split(%sep%)",
+      "join": "string.Join(%sep%, %val%)",
+      "len": "GetLength(%val%)"
+    },
     "structures": {
       "if": "if (%condition%) { %body% }",
       "else": " else { %body% }"
