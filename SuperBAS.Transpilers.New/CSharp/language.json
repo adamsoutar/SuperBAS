@@ -9,21 +9,29 @@
     "lowestLine": "/*LOWESTLINE*/"
   },
   "snippets": {
-    "cases": "case %?!:",
-    "endCase": "goto case %?!;",
+    "commands": {
+      "cases": "case %lineNumber%:",
+      "endCase": "goto case %nextLine%;",
 
-    "print": "Console.WriteLine(%?!);",
-    "cls": "Console.Clear()",
-    "goto": "lineNumber = %?!; goto GosubStart;",
-    "gosub": "Gosub(%?!);",
-    "return": "return;",
-    "sleep": "Thread.Sleep(%?!);",
+      "print": "Console.WriteLine(%text%);",
+      "cls": "Console.Clear()",
+      "goto": "lineNumber = %lineNumber%; goto GosubStart;",
+      "gosub": "Gosub(%lineNumber%);",
+      "return": "return;",
+      "sleep": "Thread.Sleep(%time%);",
 
-    "next": "%?! += %?!; if (%?!) { skip%?!_bool = true; %?! }",
-    "ink": "Console.ForegroundColor = (ConsoleColor)(%?!);",
-    "paper": "Console.BackgroundColor = (ConsoleColor)(%?!);",
-    "exit": "Environment.Exit(0);",
-    "stop": "Console.ReadKey(); Environment.Exit(0)",
-    "waitkey": "Console.ReadKey();",
+      "next": "%counter% += %step%; if (%condition%) { %skipVar% = true; %goto% }",
+      "ink": "Console.ForegroundColor = (ConsoleColor)(%colour%);",
+      "paper": "Console.BackgroundColor = (ConsoleColor)(%colour%);",
+      "exit": "Environment.Exit(0);",
+      "stop": "Console.ReadKey(); Environment.Exit(0)",
+      "waitkey": "Console.ReadKey();",
+    },
+    "expressions": {
+      "string": "\"%value%\"",
+      "number": "(double)(%value%)",
+      "arrayAccess": "%array%[%indexes%]",
+      "arrayIndexSeperator": ","
+    }
   }
 }
