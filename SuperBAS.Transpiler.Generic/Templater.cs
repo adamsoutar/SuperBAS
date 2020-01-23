@@ -116,6 +116,32 @@ It's a valid command, but not yet implemented in the new transpiler.
                 }
             }
 
+            if (command.Type == ASTNodeType.If)
+            {
+                var ifCmd = (ASTIf)command;
+                var thenCode = "";
+                foreach (var thn in ifCmd.Then)
+                {
+                    thenCode += GetCodeForCommand(thn, lineNumber);
+                }
+
+                var elseCode = "";
+                if (ifCmd.Else != null)
+                {
+                    foreach (var els in ifCmd.Else)
+                    {
+                        elseCode += GetCodeForCommand(els, lineNumber);
+                    }
+                    elseCode = Target.GetSnippet("structures", "else", "body", elseCode);
+                }
+
+                return Target.GetComplexSnippet("structures", "if", new Dictionary<string, string>()
+                {
+                    { "condition", GetCodeForExpression(ifCmd.Condition) },
+                    { "body", thenCode }
+                }) + elseCode;
+            }
+
             return Croak("Unsupported AST Node in new transpiler.");
         }
 
@@ -147,7 +173,8 @@ It's a valid command, but not yet implemented in the new transpiler.
             }
             else target = (ASTVariable)op;
 
-            return outCode + Target.GetSnippet("commands", "input", "var", GetCodeForVar(target));
+            var type = target.IsString ? "inputString" : "inputNumber";
+            return outCode + Target.GetSnippet("commands", type, "var", GetCodeForVar(target));
         }
 
         public string GetCodeForExpression (IASTNode expression)

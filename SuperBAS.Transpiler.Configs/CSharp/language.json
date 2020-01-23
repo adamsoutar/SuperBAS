@@ -23,9 +23,14 @@
       "exit": "Environment.Exit(0);",
       "stop": "Console.ReadKey(); Environment.Exit(0);",
       "waitkey": "Console.ReadKey();",
-      "input": "%var% = Console.ReadLine();",
+      "inputString": "%var% = Console.ReadLine();",
+      "inputNumber": "%var% = double.Parse(Console.ReadLine());",
       "writefile": "WriteAllFile(%fileName%, %contents%, false);",
       "appendfile": "WriteAllFile(%fileName%, %contents%, true);"
+    },
+    "structures": {
+      "if": "if (%condition%) { %body% }",
+      "else": " else { %body% }"
     },
     "cases": {
       "cases": "case %lineNumber%:",
