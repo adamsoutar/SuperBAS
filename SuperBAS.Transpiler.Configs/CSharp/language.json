@@ -11,7 +11,7 @@
     },
     "commands": {
       "print": "Console.WriteLine(%text%);",
-      "cls": "Console.Clear()",
+      "cls": "Console.Clear();",
       "goto": "lineNumber = %lineNumber%; goto GosubStart;",
       "gosub": "Gosub(%lineNumber%);",
       "return": "return;",
@@ -21,18 +21,34 @@
       "ink": "Console.ForegroundColor = (ConsoleColor)(%colour%);",
       "paper": "Console.BackgroundColor = (ConsoleColor)(%colour%);",
       "exit": "Environment.Exit(0);",
-      "stop": "Console.ReadKey(); Environment.Exit(0)",
-      "waitkey": "Console.ReadKey();"
+      "stop": "Console.ReadKey(); Environment.Exit(0);",
+      "waitkey": "Console.ReadKey();",
+      "input": "%var% = Console.ReadLine();"
     },
     "cases": {
       "cases": "case %lineNumber%:",
       "endCase": "goto case %nextLine%;"
     },
+    "vars": {
+      "stringDeclaration": "private static string %name% = \"\";\n",
+      "numberDeclaration": "private static double %name% = 0.0;\n"
+    },
     "operators": {
+      "=": "%a% = %b%;",
+      "==": "(%a% == %b%)",
+      "<": "(%a% < %b%)",
+      ">": "(%a% > %b%)",
+      "<=": "(%a% <= %b%)",
+      ">=": "(%a% >= %b%)",
+      "!=": "(%a% != %b%)",
+      "AND": "(%a% && %b%)",
+      "OR": "(%a% || %b%)",
+      "NOT": "!(%a%)",
       "+": "(%a% + %b%)",
       "-": "(%a% - %b%)",
       "*": "(%a% * %b%)",
-      "/": "(%a% / %b%)"
+      "/": "(%a% / %b%)",
+      "MOD": "(%a% % %b%)"
     },
     "expressions": {
       "string": "\"%value%\"",

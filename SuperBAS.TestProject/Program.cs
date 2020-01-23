@@ -9,7 +9,8 @@ namespace UserProgram
     class Program
     {
         private static Random rand;
-        
+        private static string NAME_string = "";
+
 
         static void Gosub(double lineNumber)
         {
@@ -18,8 +19,8 @@ namespace UserProgram
             {
                 case -1:
                     return;
-                case 1:Console.WriteLine("Hello, world!");
-goto case 2;case 2:Console.WriteLine(((double)(1) + (double)(1)));
+                case 1:Console.WriteLine("What's your name?");NAME_string = Console.ReadLine();
+goto case 2;case 2:Console.WriteLine((("Hello, " + NAME_string) + "!"));
 goto case -1;
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");

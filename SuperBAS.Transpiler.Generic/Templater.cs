@@ -9,6 +9,8 @@ namespace SuperBAS.Transpiler.Generic
         public TargetLanguage Target;
         public float LowestLine = float.PositiveInfinity;
         private SyntaxTreeTopLevel[] lines;
+        private string declarations = "";
+        private List<string> seenVars = new List<string>();
 
         public Templater(TargetLanguage target, Parser.Parser parser)
         {
@@ -26,7 +28,9 @@ Target: {Target.Config["meta"]["name"]}
 
         public string GetFullProgramCode ()
         {
-            return Target.CodeGen("", GetCodeForBody(), LowestLine.ToString()) ;
+            // This is executed fist 'cause it generates declarations
+            var body = GetCodeForBody();
+            return Target.CodeGen(declarations, body, LowestLine.ToString()) ;
         }
 
         public string GetCodeForBody ()
@@ -78,7 +82,9 @@ Target: {Target.Config["meta"]["name"]}
                         return Target.GetSnippet("commands", "return");
                     case "SLEEP":
                         return Target.GetSnippet("commands", "sleep", "time", GetCodeForExpression(cmd.Operand));
-                    // LET
+                    case "LET":
+                        // Operand of LET is a binary expression with =
+                        return GetCodeForExpression(cmd.Operand);
                     // NEXT
                     // TOPOF
                     // DIM
@@ -96,7 +102,8 @@ Target: {Target.Config["meta"]["name"]}
                         return Target.GetSnippet("commands", "stop");
                     case "WAITKEY":
                         return Target.GetSnippet("commands", "waitkey");
-                    // INPUT
+                    case "INPUT":
+                        return GetCodeForInput(cmd.Operand);
                     // WRITEFILE
                     // APPENDFILE
                     default:
@@ -105,6 +112,23 @@ Target: {Target.Config["meta"]["name"]}
             }
 
             return Croak("Unsupported AST Node in new transpiler.");
+        }
+
+        public string GetCodeForInput (IASTNode op)
+        {
+            var outCode = "";
+            ASTVariable target;
+
+            if (op.Type == ASTNodeType.CompoundExpression)
+            {
+                var args = ((ASTCompoundExpression)op).Expressions;
+                target = (ASTVariable)args[1];
+
+                outCode += Target.GetSnippet("commands", "print", "text", GetCodeForExpression(args[0]));
+            }
+            else target = (ASTVariable)op;
+
+            return outCode + Target.GetSnippet("commands", "input", "var", GetCodeForVar(target));
         }
 
         public string GetCodeForExpression (IASTNode expression)
@@ -132,7 +156,28 @@ Target: {Target.Config["meta"]["name"]}
                     });
             }
 
+            if (expression.Type == ASTNodeType.Variable)
+            {
+                var vr = (ASTVariable)expression;
+                return GetCodeForVar(vr);
+            }
+
             return Croak("Unsupported expression type in AST.");
+        }
+
+        public string GetCodeForVar (ASTVariable vr, bool autoDefine = true)
+        {
+            var name = vr.IsString ? vr.Name + "_string" : vr.Name + "_number";
+
+            if (autoDefine && !seenVars.Contains(name))
+            {
+                Console.WriteLine($"[debug] Auto-defining {name}");
+                seenVars.Add(name);
+                var type = vr.IsString ? "stringDeclaration" : "numberDeclaration";
+                declarations += Target.GetSnippet("vars", type, "name", name);
+            }
+
+            return name;
         }
     }
 }
