@@ -77,7 +77,7 @@ Target: {Target.Config["meta"]["name"]}
                     case "RETURN":
                         return Target.GetSnippet("commands", "return");
                     case "SLEEP":
-                        return Target.GetSnippet("commands", "sleep");
+                        return Target.GetSnippet("commands", "sleep", "time", GetCodeForExpression(cmd.Operand));
                     // LET
                     // NEXT
                     // TOPOF
