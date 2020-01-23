@@ -6,6 +6,7 @@
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DocumentationFile></DocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SuperBAS.Parser\SuperBAS.Parser.csproj" />

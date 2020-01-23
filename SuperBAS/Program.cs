@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
+using SuperBAS.Transpiler.Generic;
 
 namespace SuperBAS
 {
@@ -30,19 +30,10 @@ namespace SuperBAS
             }
             else output = args[1];
 
-            if (args.Length > 2 && args[2] == "web")
-            {
-                Console.WriteLine("[info] Transpiling to JS (web)");
-                var Transpiler = new Transpiler.Javascript.Transpiler(file);
-                Transpiler.SaveTo(output);
-            } else
-            {
-                Console.WriteLine("[info] Transpiling to C# (native)");
-                var Transpiler = new Transpiler.CSharp.Transpiler(file);
-                Transpiler.SaveTo(output);
-            }
+            var configFolder = "/Users/adam/Documents/Mac Projects/SuperBAS/SuperBAS.Transpiler.Configs/CSharp";
+            var target = TargetLanguage.FromDirectory(configFolder);
+            var transpiler = new Transpiler.Generic.Transpiler(file, target);
 
-            Console.WriteLine($"Compiled {file} and saved to {output}");
         }
     }
 }

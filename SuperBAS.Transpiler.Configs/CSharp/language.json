@@ -25,7 +25,7 @@
       "paper": "Console.BackgroundColor = (ConsoleColor)(%colour%);",
       "exit": "Environment.Exit(0);",
       "stop": "Console.ReadKey(); Environment.Exit(0)",
-      "waitkey": "Console.ReadKey();"
+      "waitkey": "Console.ReadKey();",
     },
     "expressions": {
       "string": "\"%value%\"",
