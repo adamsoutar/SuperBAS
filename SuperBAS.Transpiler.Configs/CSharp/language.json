@@ -61,6 +61,15 @@
       "numberDeclaration": "private static double %name% = 0.0;\n",
       "boolDeclaration": "private static bool %name% = false;\n"
     },
+    "functions": {
+      "argSeperator": ", ",
+      "stringDeclaration": "static string %name%(%args%) { \nreturn %exp%\n }",
+      "numberDeclaration": "static double %name%(%args%) { \nreturn %exp%\n }"
+    },
+    "runtime": {
+      "getArrayItem": "%array%[%args%]",
+      "setArrayItem": "%array%[%args%] = %value%;"
+    },
     "operators": {
       "=": "%a% = %b%;",
       "==": "(%a% == %b%)",

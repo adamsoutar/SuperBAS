@@ -266,7 +266,6 @@ It's a valid command, but not yet implemented in the new transpiler.
             var args = call.Arguments.Expressions;
             var argCount = args.Length;
             var fName = call.FunctionName.Name;
-            Console.WriteLine(argCount);
 
             var cd = "";
             // Some calls like RANDOM don't use args
