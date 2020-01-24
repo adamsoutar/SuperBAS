@@ -8,9 +8,8 @@ namespace UserProgram
 {
     class Program
     {
-        private static Random rand;
-        private static double I_number = 0.0;
-private static bool I_number_skip = false;
+        private static Random rand = new Random();
+        private static double X_number = 0.0;
 
 
         static void Gosub(double lineNumber)
@@ -20,9 +19,8 @@ private static bool I_number_skip = false;
             {
                 case -1:
                     return;
-                case 1:if (I_number_skip) I_number_skip = false; else I_number = (double)(1);
-goto case 2;case 2:Console.WriteLine(I_number);
-goto case 3;case 3:I_number += (double)(1);if ((I_number <= (double)(10))) { I_number_skip = true; lineNumber = 1; goto GosubStart; }
+                case 1:X_number = Math.Floor((rand.NextDouble() * (double)(4)));
+goto case 2;case 2:Console.WriteLine(X_number);
 goto case -1;
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");

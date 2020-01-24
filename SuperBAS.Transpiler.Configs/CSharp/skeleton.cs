@@ -8,7 +8,7 @@ namespace UserProgram
 {
     class Program
     {
-        private static Random rand;
+        private static Random rand = new Random();
         /*DECLARATIONS*/
 
         static void Gosub(double lineNumber)

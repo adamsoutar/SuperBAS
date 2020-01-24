@@ -251,6 +251,92 @@ It's a valid command, but not yet implemented in the new transpiler.
             return outCode + Target.GetSnippet("commands", type, "var", GetCodeForVar(target));
         }
 
+        public string GetCodeForCall (ASTCall call)
+        {
+            if (IsStdLib(call))
+            {
+                return GetCodeForStdLib(call);
+            }
+
+            return Croak("Sorry! Functions and arrays aren't supported yet.");
+        }
+
+        public string GetCodeForStdLib (ASTCall call)
+        {
+            var args = call.Arguments.Expressions;
+            var argCount = args.Length;
+            var fName = call.FunctionName.Name;
+            Console.WriteLine(argCount);
+
+            var cd = "";
+            // Some calls like RANDOM don't use args
+            if (argCount > 0)
+                cd = GetCodeForExpression(args[0]);
+
+            switch (fName)
+            {
+                case "STR":
+                    return Target.GetSnippet("stdLib", "str", "val", cd);
+                case "VAL":
+                    return Target.GetSnippet("stdLib", "val", "val", cd);
+                case "SIN":
+                    return Target.GetSnippet("stdLib", "sin", "val", cd);
+                case "COS":
+                    return Target.GetSnippet("stdLib", "cos", "val", cd);
+                case "TAN":
+                    return Target.GetSnippet("stdLib", "tan", "val", cd);
+                case "FLOOR":
+                    return Target.GetSnippet("stdLib", "floor", "val", cd);
+                case "CEIL":
+                    return Target.GetSnippet("stdLib", "ceil", "val", cd);
+                case "RANDOM":
+                    return Target.GetSnippet("stdLib", "random", "val", cd);
+                case "ROUND":
+                    var dps = GetCodeForExpression(new ASTNumber()
+                    {
+                        Value = 0
+                    });
+                    if (args.Length > 1)
+                        dps = GetCodeForExpression(args[1]);
+                    return Target.GetComplexSnippet("stdLib", "round", new Dictionary<string, string>() {
+                        { "val", cd },
+                        { "dps", dps }
+                    });
+                case "READFILE":
+                    return Target.GetSnippet("stdLib", "readfile", "val", cd);
+                case "SPLIT":
+                    var sep = GetCodeForExpression(args[1]);
+                    return Target.GetComplexSnippet("stdLib", "split", new Dictionary<string, string>()
+                    {
+                        { "val", cd },
+                        { "sep", sep }
+                    });
+                case "JOIN":
+                    var sep2 = GetCodeForExpression(args[1]);
+                    return Target.GetComplexSnippet("stdLib", "join", new Dictionary<string, string>()
+                    {
+                        { "val", cd },
+                        { "sep", sep2 }
+                    });
+                case "LEN":
+                    return Target.GetSnippet("stdLib", "len", "val", cd);
+                default:
+                    return Croak("This standard lib function is not yet implemented.");
+            }
+        }
+
+        public bool IsStdLib (ASTCall call)
+        {
+            foreach (var fn in LangUtils.StdLib)
+            {
+                if (
+                    fn.Name == call.FunctionName.Name &&
+                    fn.IsString == call.FunctionName.IsString)
+                    return true;
+            }
+            return false;
+        }
+
         public string GetCodeForExpression (IASTNode expression)
         {
             if (expression.Type == ASTNodeType.String)
@@ -280,6 +366,11 @@ It's a valid command, but not yet implemented in the new transpiler.
             {
                 var vr = (ASTVariable)expression;
                 return GetCodeForVar(vr);
+            }
+
+            if (expression.Type == ASTNodeType.Call)
+            {
+                return GetCodeForCall((ASTCall)expression);
             }
 
             return Croak("Unsupported expression type in AST.");
