@@ -2,13 +2,26 @@
 using System.Collections.Generic;
 using System.Collections;
 using SuperBAS.Parser;
+using System.Linq;
 
 namespace SuperBAS.Transpiler.Generic
 {
+    public struct Loop
+    {
+        public float DefinedOnLine;
+        public string SkipVar;
+        public IASTNode Step;
+        public IASTNode Start;
+        public ASTBinary Condition;
+        public ASTVariable Counter;
+    }
+
     public class Templater
     {
         public TargetLanguage Target;
         public float LowestLine = float.PositiveInfinity;
+
+        private Dictionary<string, Loop> loops = new Dictionary<string, Loop>();
         private SyntaxTreeTopLevel[] lines;
         private string declarations = "";
         private List<string> seenVars = new List<string>();
@@ -86,7 +99,8 @@ Target: {Target.Config["meta"]["name"]}
                     case "LET":
                         // Operand of LET is a binary expression with =
                         return GetCodeForExpression(cmd.Operand);
-                    // NEXT
+                    case "NEXT":
+                        return GetCodeForNext((ASTVariable)cmd.Operand);
                     // TOPOF
                     // DIM
                     // LISTADD
@@ -143,7 +157,66 @@ It's a valid command, but not yet implemented in the new transpiler.
                 }) + elseCode;
             }
 
+            if (command.Type == ASTNodeType.For)
+            {
+                var forLoop = (ASTFor)command;
+                var loopVar = (ASTVariable)forLoop.Assignment.Left;
+                var counter = GetCodeForVar(loopVar);
+
+                // Bool for skip reassign, not exposed to user code
+                var skp = $"{counter}_skip";
+                declarations += Target.GetSnippet("vars", "boolDeclaration", "name", skp);
+
+                var startCount = forLoop.Assignment.Right;
+                var condition = new ASTBinary()
+                {
+                    Operator = "<=",
+                    Left = loopVar,
+                    Right = forLoop.ToMax
+                };
+                var loop = new Loop()
+                {
+                    Condition = condition,
+                    DefinedOnLine = lineNumber,
+                    SkipVar = skp,
+                    Start = startCount,
+                    Step = forLoop.Step,
+                    Counter = loopVar
+                };
+                loops.Add(counter, loop);
+
+                return Target.GetComplexSnippet("loops", "check", new Dictionary<string, string>()
+                {
+                    { "skip", skp },
+                    { "loopVar", counter },
+                    { "start", GetCodeForExpression(startCount) }
+                });
+            }
+
             return Croak("Unsupported AST Node in new transpiler.");
+        }
+
+        public string GetCodeForNext (ASTVariable loopVar)
+        {
+            var counter = GetCodeForVar(loopVar);
+            if (!loops.Keys.Contains(counter))
+                Croak($"Called NEXT before defining a loop for variable \"{counter}\"");
+
+            var loop = loops[counter];
+            var increment = Target.GetComplexSnippet("loops", "increment", new Dictionary<string, string>() {
+                { "counter", counter },
+                { "step", GetCodeForExpression(loop.Step) }
+            });
+
+            var gotoCode = Target.GetSnippet("commands", "goto", "lineNumber", loop.DefinedOnLine.ToString());
+            var jump = Target.GetComplexSnippet("loops", "jump", new Dictionary<string, string>()
+            {
+                { "condition", GetCodeForExpression(loop.Condition) },
+                { "skip", loop.SkipVar },
+                { "goto", gotoCode }
+            });
+
+            return increment + jump;
         }
 
         public string GetCodeForFileWrite (ASTCommand cmd)

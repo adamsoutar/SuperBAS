@@ -28,6 +28,11 @@
       "writefile": "WriteAllFile(%fileName%, %contents%, false);",
       "appendfile": "WriteAllFile(%fileName%, %contents%, true);"
     },
+    "loops": {
+      "check": "if (%skip%) %skip% = false; else %loopVar% = %start%;",
+      "increment": "%counter% += %step%;",
+      "jump": "if (%condition%) { %skip% = true; %goto% }"
+    },
     "stdLib": {
       "str": "(%val%).ToString()",
       "val": "double.Parse(%val%)",
@@ -53,7 +58,8 @@
     },
     "vars": {
       "stringDeclaration": "private static string %name% = \"\";\n",
-      "numberDeclaration": "private static double %name% = 0.0;\n"
+      "numberDeclaration": "private static double %name% = 0.0;\n",
+      "boolDeclaration": "private static bool %name% = false;\n"
     },
     "operators": {
       "=": "%a% = %b%;",
