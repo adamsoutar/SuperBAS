@@ -196,6 +196,17 @@ It's a valid command, but not yet implemented in the new transpiler.
             return Croak("Unsupported AST Node in new transpiler.");
         }
 
+        public string GetCodeForTopof (ASTVariable loopVar)
+        {
+            var counter = GetCodeForVar(loopVar);
+            if (!loops.Keys.Contains(counter))
+                Croak($"Called TOPOF before defining a loop for variable \"{counter}\"");
+
+            var loop = loops[counter];
+            var gotoCode = Target.GetSnippet("commands", "goto", "lineNumber", loop.DefinedOnLine.ToString());
+            return gotoCode;
+        }
+
         public string GetCodeForNext (ASTVariable loopVar)
         {
             var counter = GetCodeForVar(loopVar);

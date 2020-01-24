@@ -43,8 +43,8 @@ namespace UserProgram
             sw.Write(contents);
             sw.Close();
         }
-
-        public double GetLength<T> (T thing)
+        
+        static double GetLength<T> (T thing)
         {
             // Get the length of anything.
             // This allows one LEN() method for lists, arrays and strings

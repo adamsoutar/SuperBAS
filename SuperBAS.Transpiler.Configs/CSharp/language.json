@@ -66,9 +66,10 @@
       "stringDeclaration": "static string %name%(%args%) { \nreturn %exp%\n }",
       "numberDeclaration": "static double %name%(%args%) { \nreturn %exp%\n }"
     },
-    "runtime": {
-      "getArrayItem": "%array%[%args%]",
-      "setArrayItem": "%array%[%args%] = %value%;"
+    "arrays": {
+      "access": "%array%[%dimensions%]",
+      "indexSeperator": ", ",
+      "index": "(int)(%val%)"
     },
     "operators": {
       "=": "%a% = %b%;",
@@ -89,9 +90,7 @@
     },
     "expressions": {
       "string": "\"%value%\"",
-      "number": "(double)(%value%)",
-      "arrayAccess": "%array%[%indexes%]",
-      "arrayIndexSeperator": ","
+      "number": "(double)(%value%)"
     }
   }
 }
