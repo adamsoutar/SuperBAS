@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace SuperBAS.Transpiler.Generic
+namespace SuperBAS.Transpiler
 {
     public class TargetLanguage
     {

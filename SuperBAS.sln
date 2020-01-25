@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperBAS", "SuperBAS\SuperB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperBAS.Parser", "SuperBAS.Parser\SuperBAS.Parser.csproj", "{03E894ED-B44D-460B-9133-018296C165C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperBAS.Transpiler.Generic", "SuperBAS.Transpiler.Generic\SuperBAS.Transpiler.Generic.csproj", "{ABB7C423-803F-4025-A04C-2F89E5AA8966}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperBAS.Transpiler", "SuperBAS.Transpiler.Generic\SuperBAS.Transpiler.csproj", "{ABB7C423-803F-4025-A04C-2F89E5AA8966}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

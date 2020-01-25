@@ -2,7 +2,7 @@
 using System.IO;
 using SuperBAS.Parser;
 
-namespace SuperBAS.Transpiler.Generic
+namespace SuperBAS.Transpiler
 {
     public class Transpiler
     {

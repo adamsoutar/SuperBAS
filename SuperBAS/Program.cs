@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using SuperBAS.Transpiler.Generic;
+using SuperBAS.Transpiler;
 
 namespace SuperBAS
 {
@@ -32,12 +32,14 @@ namespace SuperBAS
 
             var configFolder = "/Users/adam/Documents/Mac Projects/SuperBAS/SuperBAS.Transpiler.Configs/CSharp";
             var target = TargetLanguage.FromDirectory(configFolder);
+
             Console.WriteLine($"[info] Target language: {target.Config["meta"]["name"]}");
             Console.WriteLine($"[info] {target.Config["meta"]["printInfo"]}");
-            var transpiler = new Transpiler.Generic.Transpiler(file, target);
-            Console.WriteLine("[info] Transpiled! Saving.");
 
+            var transpiler = new Transpiler.Transpiler(file, target);
             transpiler.SaveTo(output);
+
+            Console.WriteLine("[info] Transpiled! Saving.");
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 using SuperBAS.Parser;
 using System.Linq;
 
-namespace SuperBAS.Transpiler.Generic
+namespace SuperBAS.Transpiler
 {
     public struct Loop
     {
