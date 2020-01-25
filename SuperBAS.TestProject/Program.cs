@@ -9,9 +9,10 @@ namespace UserProgram
     class Program
     {
         private static Random rand = new Random();
-        static double I_number = 0.0;
-static bool I_number_skip = false;
-
+        static double X_number = 0.0;
+static double userFn_SQUARE_number(double X_number) { 
+return (X_number * X_number);
+ }
 
         static void Gosub(double lineNumber)
         {
@@ -20,10 +21,8 @@ static bool I_number_skip = false;
             {
                 case -1:
                     return;
-                case 1:if (I_number_skip) I_number_skip = false; else I_number = (double)(1);
-goto case 2;case 2:Console.WriteLine(I_number);
-goto case 2.5;case 2.5:I_number_skip = true; lineNumber = 1; goto GosubStart;
-goto case 3;case 3:I_number += (double)(1);if ((I_number <= (double)(10))) { I_number_skip = true; lineNumber = 1; goto GosubStart; }
+                case 1:
+goto case 3;case 3:userFn_SQUARE_number((double)(4));
 goto case -1;
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");

@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperBAS", "SuperBAS\SuperB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperBAS.Parser", "SuperBAS.Parser\SuperBAS.Parser.csproj", "{03E894ED-B44D-460B-9133-018296C165C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperBAS.Transpiler.CSharp", "SuperBAS.Transpiler.CSharp\SuperBAS.Transpiler.CSharp.csproj", "{5D36DE20-C9FC-443B-BCF0-2911A0FBDEF2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperBAS.Transpiler.Generic", "SuperBAS.Transpiler.Generic\SuperBAS.Transpiler.Generic.csproj", "{ABB7C423-803F-4025-A04C-2F89E5AA8966}"
 EndProject
 Global
@@ -23,10 +21,6 @@ Global
 		{03E894ED-B44D-460B-9133-018296C165C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03E894ED-B44D-460B-9133-018296C165C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03E894ED-B44D-460B-9133-018296C165C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D36DE20-C9FC-443B-BCF0-2911A0FBDEF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D36DE20-C9FC-443B-BCF0-2911A0FBDEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D36DE20-C9FC-443B-BCF0-2911A0FBDEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D36DE20-C9FC-443B-BCF0-2911A0FBDEF2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ABB7C423-803F-4025-A04C-2F89E5AA8966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ABB7C423-803F-4025-A04C-2F89E5AA8966}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABB7C423-803F-4025-A04C-2F89E5AA8966}.Release|Any CPU.ActiveCfg = Release|Any CPU
