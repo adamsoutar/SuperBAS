@@ -9,7 +9,7 @@ namespace UserProgram
     class Program
     {
         private static Random rand = new Random();
-        static List<string> NAMES_string;static double I_number = 0.0;
+        static double I_number = 0.0;
 static bool I_number_skip = false;
 
 
@@ -20,13 +20,10 @@ static bool I_number_skip = false;
             {
                 case -1:
                     return;
-                case 1:NAMES_string = new List<string>();
-goto case 2;case 2:NAMES_string.Add("Adam");
-goto case 3;case 3:NAMES_string.Add("Rob");
-goto case 4;case 4:if (I_number_skip) I_number_skip = false; else I_number = (double)(0);
-goto case 5;case 5:Console.WriteLine(NAMES_string[(int)(I_number)]);
-goto case 6;case 6:I_number += (double)(1);if ((I_number <= (GetLength(NAMES_string) - (double)(1)))) { I_number_skip = true; lineNumber = 4; goto GosubStart; }
-goto case 7;case 7:Console.WriteLine(GetLength(("Hello" + "World")));
+                case 1:if (I_number_skip) I_number_skip = false; else I_number = (double)(1);
+goto case 2;case 2:Console.WriteLine(I_number);
+goto case 2.5;case 2.5:I_number_skip = true; lineNumber = 1; goto GosubStart;
+goto case 3;case 3:I_number += (double)(1);if ((I_number <= (double)(10))) { I_number_skip = true; lineNumber = 1; goto GosubStart; }
 goto case -1;
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");

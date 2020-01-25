@@ -101,7 +101,8 @@ Target: {Target.Config["meta"]["name"]}
                         return GetCodeForExpression(cmd.Operand);
                     case "NEXT":
                         return GetCodeForNext((ASTVariable)cmd.Operand);
-                    // TOPOF
+                    case "TOPOF":
+                        return GetCodeForTopof((ASTVariable)cmd.Operand);
                     case "DIM":
                         return GetCodeForDim((ASTCall)cmd.Operand);
                     case "LISTADD":
@@ -317,7 +318,12 @@ It's a valid command, but not yet implemented in the new transpiler.
 
             var loop = loops[counter];
             var gotoCode = Target.GetSnippet("commands", "goto", "lineNumber", loop.DefinedOnLine.ToString());
-            return gotoCode;
+            var topCode = Target.GetComplexSnippet("loops", "topofJump", new Dictionary<string, string>()
+            {
+                { "skip", loop.SkipVar },
+                { "goto", gotoCode }
+            });
+            return topCode;
         }
 
         public string GetCodeForNext (ASTVariable loopVar)
