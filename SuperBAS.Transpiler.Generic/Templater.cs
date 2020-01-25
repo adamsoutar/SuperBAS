@@ -104,9 +104,12 @@ Target: {Target.Config["meta"]["name"]}
                     // TOPOF
                     case "DIM":
                         return GetCodeForDim((ASTCall)cmd.Operand);
-                    // LISTADD
-                    // LISTRM
-                    // LIST
+                    case "LISTADD":
+                        return GetCodeForListAdd((ASTCompoundExpression)cmd.Operand);
+                    case "LISTRM":
+                        return GetCodeForListRm((ASTCompoundExpression)cmd.Operand);
+                    case "LIST":
+                        return GetCodeForList((ASTVariable)cmd.Operand);
                     // TODO: PRINTAT
                     case "INK":
                         return Target.GetSnippet("commands", "ink", "colour", GetCodeForExpression(cmd.Operand));
@@ -229,6 +232,46 @@ It's a valid command, but not yet implemented in the new transpiler.
             }
 
             return Croak("Unsupported AST Node in new transpiler.");
+        }
+
+        public string GetCodeForList (ASTVariable op)
+        {
+            // Exclude this var from Auto-Define
+            var nm = GetCodeForVar(op, false);
+            seenVars.Add(nm);
+
+            var type = op.IsString ? "string" : "number";
+            var snip = type + "Declaration";
+            var code = Target.GetSnippet("lists", snip, "name", nm);
+            declarations += code;
+
+            var initSnip = type + "Init";
+            var initCode = Target.GetSnippet("lists", initSnip, "name", nm);
+            return initCode;
+        }
+
+        public string GetCodeForListAdd (ASTCompoundExpression op)
+        {
+            var args = op.Expressions;
+            var nm = GetCodeForVar((ASTVariable)args[0]);
+            var val = GetCodeForExpression(args[1]);
+            return Target.GetComplexSnippet("lists", "add", new Dictionary<string, string>()
+            {
+                { "name", nm },
+                { "val", val }
+            });
+        }
+
+        public string GetCodeForListRm (ASTCompoundExpression op)
+        {
+            var args = op.Expressions;
+            var nm = GetCodeForVar((ASTVariable)args[0]);
+            var index = GetCodeForExpression(args[1]);
+            return Target.GetComplexSnippet("lists", "remove", new Dictionary<string, string>()
+            {
+                { "name", nm },
+                { "index", index }
+            });
         }
 
         public string GetCodeForDim (ASTCall call)

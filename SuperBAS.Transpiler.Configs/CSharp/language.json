@@ -1,7 +1,8 @@
 {
   "meta": {
     "name": "C#",
-    "filetype": ".cs"
+    "filetype": ".cs",
+    "printInfo": "You will need a C# compiler to build this target. (Install VS Build Tools)"
   },
   "snippets": {
     "injectionPoints": {
@@ -61,9 +62,7 @@
     "vars": {
       "stringDeclaration": "static string %name% = \"\";\n",
       "numberDeclaration": "static double %name% = 0.0;\n",
-      "boolDeclaration": "static bool %name% = false;\n",
-      "stringListDeclaration": "static List<string> %name% = new List<string>();",
-      "numberListDeclaration": "static List<double> %name% = new List<double>();"
+      "boolDeclaration": "static bool %name% = false;\n"
     },
     "functions": {
       "argSeperator": ", ",
@@ -72,6 +71,14 @@
       "stringArg": "string %arg%",
       "numberArg": "double %arg%",
       "call": "userFn_%name%(%args%)"
+    },
+    "lists": {
+      "stringDeclaration": "static List<string> %name%;",
+      "numberDeclaration": "static List<double> %name%;",
+      "stringInit": "%name% = new List<string>();",
+      "numberInit": "%name% = new List<double>();",
+      "add": "%name%.Add(%val%);",
+      "remove": "%name%.RemoveAt((int)(%index%));"
     },
     "arrays": {
       "access": "%array%[%dimensions%]",
