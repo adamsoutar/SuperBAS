@@ -69,7 +69,11 @@
     "arrays": {
       "access": "%array%[%dimensions%]",
       "indexSeperator": ", ",
-      "index": "(int)(%val%)"
+      "index": "(int)(%val%)",
+      "stringInit": "%array% = new string[%dimensions%];",
+      "numberInit": "%array% = new double[%dimensions%];",
+      "stringDeclaration": "static string[%seps%] %array%;",
+      "numberDeclaration": "static double[%seps%] %array%;"
     },
     "operators": {
       "=": "%a% = %b%;",

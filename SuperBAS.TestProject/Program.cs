@@ -9,8 +9,7 @@ namespace UserProgram
     class Program
     {
         private static Random rand = new Random();
-        private static double X_number = 0.0;
-
+        static string[] STRINGS_string;static double[, ] INTMAP_number;
 
         static void Gosub(double lineNumber)
         {
@@ -19,8 +18,14 @@ namespace UserProgram
             {
                 case -1:
                     return;
-                case 1:X_number = Math.Floor((rand.NextDouble() * (double)(4)));
-goto case 2;case 2:Console.WriteLine(X_number);
+                case 1:STRINGS_string = new string[(int)((double)(5))];
+goto case 2;case 2:INTMAP_number = new double[(int)((double)(10)), (int)((double)(20))];
+goto case 2.5;case 2.5:STRINGS_string[(int)((double)(0))] = "Adam";
+goto case 3;case 3:Console.WriteLine(GetLength(STRINGS_string));
+goto case 4;case 4:Console.WriteLine(GetLength(INTMAP_number));
+goto case 5;case 5:Console.WriteLine(STRINGS_string[(int)((double)(0))]);
+goto case 6;case 6:INTMAP_number[(int)((double)(0)), (int)((double)(1))] = (double)(2);
+goto case 7;case 7:Console.WriteLine(INTMAP_number[(int)((double)(0)), (int)((double)(1))]);
 goto case -1;
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");
@@ -46,8 +51,8 @@ goto case -1;
             sw.Write(contents);
             sw.Close();
         }
-
-        public double GetLength<T> (T thing)
+        
+        static double GetLength<T> (T thing)
         {
             // Get the length of anything.
             // This allows one LEN() method for lists, arrays and strings

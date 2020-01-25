@@ -102,7 +102,8 @@ Target: {Target.Config["meta"]["name"]}
                     case "NEXT":
                         return GetCodeForNext((ASTVariable)cmd.Operand);
                     // TOPOF
-                    // DIM
+                    case "DIM":
+                        return GetCodeForDim((ASTCall)cmd.Operand);
                     // LISTADD
                     // LISTRM
                     // LIST
@@ -196,6 +197,41 @@ It's a valid command, but not yet implemented in the new transpiler.
             return Croak("Unsupported AST Node in new transpiler.");
         }
 
+        public string GetCodeForDim (ASTCall call)
+        {
+            var arrayName = GetCodeForVar(call.FunctionName, false);
+            var args = new List<string>();
+            foreach (var d in call.Arguments.Expressions)
+            {
+                var exp = GetCodeForExpression(d);
+                args.Add(Target.GetSnippet("arrays", "index", "val", exp));
+            }
+
+            var dims = string.Join(Target.GetSnippet("arrays", "indexSeperator"), args);
+            var type = (call.FunctionName.IsString ? "string" : "number");
+
+            // Initialisation - this runs every time this line is hit
+            var initial = Target.GetComplexSnippet("arrays", type + "Init", new Dictionary<string, string>()
+                {
+                    { "array", arrayName },
+                    { "dimensions", dims }
+                });
+
+            var seps = "";
+            for (int i = 1; i < args.Count; i++)
+                seps += Target.GetSnippet("arrays", "indexSeperator");
+            // Definition, this happens once at the top
+            var decl = Target.GetComplexSnippet("arrays", type + "Declaration", new Dictionary<string, string>()
+            {
+                { "array", arrayName },
+                { "seps", seps }
+            });
+
+            seenVars.Add(arrayName);
+            declarations += decl;
+            return initial;
+        }
+
         public string GetCodeForTopof (ASTVariable loopVar)
         {
             var counter = GetCodeForVar(loopVar);
@@ -264,6 +300,26 @@ It's a valid command, but not yet implemented in the new transpiler.
 
         public string GetCodeForCall (ASTCall call)
         {
+            var arrayName = GetCodeForVar(call.FunctionName, false);
+            if (seenVars.Contains(arrayName))
+            {
+                var args = new List<string>();
+                foreach (var d in call.Arguments.Expressions)
+                {
+                    var exp = GetCodeForExpression(d);
+                    args.Add(Target.GetSnippet("arrays", "index", "val", exp));
+                }
+
+                var dims = string.Join(Target.GetSnippet("arrays", "indexSeperator"), args);
+                var access = Target.GetComplexSnippet("arrays", "access", new Dictionary<string, string>()
+                {
+                    { "array", arrayName },
+                    { "dimensions", dims }
+                });
+
+                return access;
+            }
+
             if (IsStdLib(call))
             {
                 return GetCodeForStdLib(call);
