@@ -59,9 +59,11 @@
       "endCase": "goto case %nextLine%;"
     },
     "vars": {
-      "stringDeclaration": "private static string %name% = \"\";\n",
-      "numberDeclaration": "private static double %name% = 0.0;\n",
-      "boolDeclaration": "private static bool %name% = false;\n"
+      "stringDeclaration": "static string %name% = \"\";\n",
+      "numberDeclaration": "static double %name% = 0.0;\n",
+      "boolDeclaration": "static bool %name% = false;\n",
+      "stringListDeclaration": "static List<string> %name% = new List<string>();",
+      "numberListDeclaration": "static List<double> %name% = new List<double>();"
     },
     "functions": {
       "argSeperator": ", ",
