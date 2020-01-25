@@ -26,7 +26,9 @@
       "inputString": "%var% = Console.ReadLine();",
       "inputNumber": "%var% = double.Parse(Console.ReadLine());",
       "writefile": "WriteAllFile(%fileName%, %contents%, false);",
-      "appendfile": "WriteAllFile(%fileName%, %contents%, true);"
+      "appendfile": "WriteAllFile(%fileName%, %contents%, true);",
+
+      "expression": "%exp%;"
     },
     "loops": {
       "check": "if (%skip%) %skip% = false; else %loopVar% = %start%;",
@@ -63,8 +65,11 @@
     },
     "functions": {
       "argSeperator": ", ",
-      "stringDeclaration": "static string %name%(%args%) { \nreturn %exp%\n }",
-      "numberDeclaration": "static double %name%(%args%) { \nreturn %exp%\n }"
+      "stringDeclaration": "static string userFn_%name%(%args%) { \nreturn %exp%;\n }",
+      "numberDeclaration": "static double userFn_%name%(%args%) { \nreturn %exp%;\n }",
+      "stringArg": "string %arg%",
+      "numberArg": "double %arg%",
+      "call": "userFn_%name%(%args%)"
     },
     "arrays": {
       "access": "%array%[%dimensions%]",

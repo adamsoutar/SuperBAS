@@ -194,6 +194,40 @@ It's a valid command, but not yet implemented in the new transpiler.
                 });
             }
 
+            if (command.Type == ASTNodeType.FunctionDefinition)
+            {
+                var fn = (ASTFunctionDefinition)command;
+                var fnName = fn.FunctionName;
+                var fnType = fnName.IsString ? "string" : "number";
+
+                var args = new List<string>();
+                foreach (var arg in fn.Arguments)
+                {
+                    var aType = arg.IsString ? "string" : "number";
+                    var vr = GetCodeForVar(arg, false);
+                    var aCode = Target.GetSnippet("functions", aType + "Arg", "arg", vr);
+                    args.Add(aCode);
+                }
+                var argString = string.Join(Target.GetSnippet("functions", "argSeperator"), args);
+
+                var fnCode = Target.GetComplexSnippet("functions", fnType + "Declaration", new Dictionary<string, string>()
+                {
+                    { "name", GetCodeForVar(fnName, false) },
+                    { "args", argString },
+                    { "exp", GetCodeForExpression(fn.Expression) }
+                });
+
+                declarations += fnCode;
+                return "";
+            }
+
+            // TODO: A more generic if (isExpression(command))
+            if (command.Type == ASTNodeType.Call)
+            {
+                var code = GetCodeForCall((ASTCall)command);
+                return Target.GetSnippet("commands", "expression", "exp", code);
+            }
+
             return Croak("Unsupported AST Node in new transpiler.");
         }
 
@@ -303,6 +337,7 @@ It's a valid command, but not yet implemented in the new transpiler.
             var arrayName = GetCodeForVar(call.FunctionName, false);
             if (seenVars.Contains(arrayName))
             {
+                // Array access
                 var args = new List<string>();
                 foreach (var d in call.Arguments.Expressions)
                 {
@@ -322,10 +357,23 @@ It's a valid command, but not yet implemented in the new transpiler.
 
             if (IsStdLib(call))
             {
+                // StdLib call
                 return GetCodeForStdLib(call);
             }
 
-            return Croak("Sorry! Functions and arrays aren't supported yet.");
+            // User function call
+            var fnArgs = new List<string>();
+            foreach (var arg in call.Arguments.Expressions)
+            {
+                fnArgs.Add(GetCodeForExpression(arg));
+            }
+            var argCode = string.Join(Target.GetSnippet("functions", "argSeperator"), fnArgs);
+
+            return Target.GetComplexSnippet("functions", "call", new Dictionary<string, string>()
+            {
+                { "name", GetCodeForVar(call.FunctionName, false) },
+                { "args", argCode }
+            });
         }
 
         public string GetCodeForStdLib (ASTCall call)

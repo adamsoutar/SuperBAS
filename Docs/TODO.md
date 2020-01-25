@@ -12,6 +12,12 @@ Compilation targets I'd like to have via new config system:
  - C++/Rust?
  - Python?
 
+Combined operators like `+=`
+
+Post-increment operators?
+
+Ternary operator? `num = 3 IF x > y ELSE 2`
+
 `;` should prevent `\n` in `PRINT`
 
 Capitalisation for variables should be a config option.
