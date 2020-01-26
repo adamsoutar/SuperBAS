@@ -1,5 +1,8 @@
 cd SuperBAS
 
+# Keep the spec for each release
+cp ../Docs/LanguageSpec.md ../releases/LanguageSpec.md
+
 # Mac
 dotnet publish -c Release --self-contained -r osx-x64 /p:PublishSingleFile=true
 cp bin/Release/netcoreapp3.1/osx-x64/publish/SuperBAS ../releases/SuperBAS-macOS-x64
