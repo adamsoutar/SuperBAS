@@ -16,13 +16,15 @@ namespace SuperBAS.Transpiler
             var cfgText = sR.ReadToEnd();
             sR.Close();
 
-            sR = new StreamReader(Path.Combine(path, "skeleton.cs"));
-            var code = sR.ReadToEnd();
-            sR.Close();
-
             var p = new TargetLanguage();
 
             p.Config = JsonConvert.DeserializeObject(cfgText);
+
+            var ext = p.Config["meta"]["filetype"];
+            sR = new StreamReader(Path.Combine(path, "skeleton" + ext));
+            var code = sR.ReadToEnd();
+            sR.Close();
+
             p.Skeleton = code;
 
             return p;
