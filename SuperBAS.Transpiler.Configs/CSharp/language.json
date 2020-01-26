@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "name": "C#",
+    "filetype": ".cs",
+    "printInfo": "You will need a C# compiler to build this target. (Install VS Build Tools)"
+  },
+  "snippets": {
+    "injectionPoints": {
+      "declarations": "/*DECLARATIONS*/",
+      "body": "/*BODY*/",
+      "lowestLine": "/*LOWESTLINE*/"
+    },
+    "commands": {
+      "print": "Console.WriteLine(%text%);",
+      "cls": "Console.Clear();",
+      "goto": "lineNumber = %lineNumber%; goto GosubStart;",
+      "gosub": "Gosub(%lineNumber%);",
+      "return": "return;",
+      "sleep": "Thread.Sleep(%time%);",
+
+      "next": "%counter% += %step%; if (%condition%) { %skipVar% = true; %goto% }",
+      "ink": "Console.ForegroundColor = (ConsoleColor)(%colour%);",
+      "paper": "Console.BackgroundColor = (ConsoleColor)(%colour%);",
+      "exit": "Environment.Exit(0);",
+      "stop": "Console.ReadKey(); Environment.Exit(0);",
+      "waitkey": "Console.ReadKey();",
+      "inputString": "%var% = Console.ReadLine();",
+      "inputNumber": "%var% = double.Parse(Console.ReadLine());",
+      "writefile": "WriteAllFile(%fileName%, %contents%, false);",
+      "appendfile": "WriteAllFile(%fileName%, %contents%, true);",
+
+      "expression": "%exp%;"
+    },
+    "loops": {
+      "check": "if (%skip%) %skip% = false; else %loopVar% = %start%;",
+      "increment": "%counter% += %step%;",
+      "jump": "if (%condition%) { %skip% = true; %goto% }",
+      "topofJump": "%skip% = true; %goto%"
+    },
+    "stdLib": {
+      "str": "(%val%).ToString()",
+      "val": "double.Parse(%val%)",
+      "sin": "Math.Sin(%val%)",
+      "cos": "Math.Cos(%val%)",
+      "tan": "Math.Tan(%val%)",
+      "floor": "Math.Floor(%val%)",
+      "ceil": "Math.Ceiling(%val%)",
+      "random": "rand.NextDouble()",
+      "round": "Math.Round(%val%, %dps%)",
+      "readfile": "ReadAllFile(%val%)",
+      "split": "(%val%).Split(%sep%)",
+      "join": "string.Join(%sep%, %val%)",
+      "len": "GetLength(%val%)"
+    },
+    "structures": {
+      "if": "if (%condition%) { %body% }",
+      "else": " else { %body% }"
+    },
+    "cases": {
+      "cases": "case %lineNumber%:",
+      "endCase": "goto case %nextLine%;"
+    },
+    "vars": {
+      "stringDeclaration": "static string %name% = \"\";\n",
+      "numberDeclaration": "static double %name% = 0.0;\n",
+      "boolDeclaration": "static bool %name% = false;\n"
+    },
+    "functions": {
+      "argSeperator": ", ",
+      "stringDeclaration": "static string userFn_%name%(%args%) { \nreturn %exp%;\n }",
+      "numberDeclaration": "static double userFn_%name%(%args%) { \nreturn %exp%;\n }",
+      "stringArg": "string %arg%",
+      "numberArg": "double %arg%",
+      "call": "userFn_%name%(%args%)"
+    },
+    "lists": {
+      "stringDeclaration": "static List<string> %name%;",
+      "numberDeclaration": "static List<double> %name%;",
+      "stringInit": "%name% = new List<string>();",
+      "numberInit": "%name% = new List<double>();",
+      "add": "%name%.Add(%val%);",
+      "remove": "%name%.RemoveAt((int)(%index%));"
+    },
+    "arrays": {
+      "access": "%array%[%dimensions%]",
+      "indexSeperator": ", ",
+      "index": "(int)(%val%)",
+      "stringInit": "%array% = new string[%dimensions%];",
+      "numberInit": "%array% = new double[%dimensions%];",
+      "stringDeclaration": "static string[%seps%] %array%;",
+      "numberDeclaration": "static double[%seps%] %array%;"
+    },
+    "operators": {
+      "=": "%a% = %b%;",
+      "==": "(%a% == %b%)",
+      "<": "(%a% < %b%)",
+      ">": "(%a% > %b%)",
+      "<=": "(%a% <= %b%)",
+      ">=": "(%a% >= %b%)",
+      "!=": "(%a% != %b%)",
+      "AND": "(%a% && %b%)",
+      "OR": "(%a% || %b%)",
+      "NOT": "!(%a%)",
+      "+": "(%a% + %b%)",
+      "-": "(%a% - %b%)",
+      "*": "(%a% * %b%)",
+      "/": "(%a% / %b%)",
+      "MOD": "(%a% % %b%)"
+    },
+    "expressions": {
+      "string": "\"%value%\"",
+      "number": "(double)(%value%)"
+    }
+  }
+}

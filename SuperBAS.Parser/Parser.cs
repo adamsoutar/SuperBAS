@@ -261,7 +261,7 @@ namespace SuperBAS.Parser
             // Structures, eg IF, FOR
             if (token.Type == TokenType.Keyword && token.Value == "IF")
             {
-                var condition = ParseExpression();
+                var condition = ParseExpression(true);
                 ExpectKeyword("THEN");
 
                 var then = new List<IASTNode>();
@@ -372,11 +372,11 @@ namespace SuperBAS.Parser
             return new ASTInvalidNode();
         }
 
-        private IASTNode ParseExpression ()
+        private IASTNode ParseExpression (bool inIf = false)
         {
             // These used to be reversed
             // but caused a bug with array indexing
-            return MightBeBinary(MightBeCall(ParseAtom()), 0);
+            return MightBeBinary(MightBeCall(ParseAtom()), 0, inIf);
         }
 
         private ASTVariable StringAsVariable (string s) {
@@ -411,17 +411,22 @@ namespace SuperBAS.Parser
                 return new ASTCall()
                 {
                     FunctionName = funcName,
-                    Arguments = Delimited("(", ")", ",", ParseExpression)
+                    Arguments = Delimited("(", ")", ",", () => ParseExpression())
                 };
             }
             return node;
         }
 
-        private IASTNode MightBeBinary (IASTNode left, int myPrecedence)
+        private IASTNode MightBeBinary (IASTNode left, int myPrecedence, bool inIf)
         {
             if (IsNextOperator())
             {
                 var op = (Token)tokenStream.Peek();
+
+                // Comparative equals
+                if (inIf && op.Value == "=")
+                    op.Value = "==";
+
                 int theirPrecedence = LangUtils.BinaryOperators[op.Value];
                 if (theirPrecedence > myPrecedence)
                 {
@@ -438,8 +443,8 @@ namespace SuperBAS.Parser
                     {
                         Operator = op.Value,
                         Left = left,
-                        Right = MightBeBinary(MightBeCall(ParseAtom()), theirPrecedence)
-                    }, myPrecedence) ;
+                        Right = MightBeBinary(MightBeCall(ParseAtom()), theirPrecedence, inIf)
+                    }, myPrecedence, inIf) ;
                 }
             }
             return left;

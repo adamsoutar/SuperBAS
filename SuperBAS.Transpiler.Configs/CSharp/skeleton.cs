@@ -9,10 +9,7 @@ namespace UserProgram
     class Program
     {
         private static Random rand = new Random();
-        static double X_number = 0.0;
-static double userFn_SQUARE_number(double X_number) { 
-return (X_number * X_number);
- }
+        /*DECLARATIONS*/
 
         static void Gosub(double lineNumber)
         {
@@ -21,9 +18,7 @@ return (X_number * X_number);
             {
                 case -1:
                     return;
-                case 1:
-goto case 3;case 3:Console.WriteLine(userFn_SQUARE_number((double)(4)));
-goto case -1;
+                /*BODY*/
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");
             }
@@ -31,7 +26,7 @@ goto case -1;
 
         static void Main(string[] args)
         {
-            Gosub(1);
+            Gosub(/*LOWESTLINE*/);
         }
 
         static string ReadAllFile (string flName) {

@@ -1,0 +1,2 @@
+1 INPUT "What's your name?", name$
+2 PRINT "Hello, " + name$ + "!"
