@@ -18,7 +18,7 @@ So why?
 
 **People who played around with home computers in the 80s like the Spectrum or Amstrad can feel alienated by programming for modern PCs**, and emulators or interpreters for old languages are plagued by low speed or dated sugar-less syntax.
 
-SuperBAS fixes that! It is designed to match your rose-tinted view of older BASIC languages, not the frustration you felt with certain features, and it compiles right down to native binaries or runs right in a webpage with C# and JS transpilation. SuperBAS is not emulated or interpreted.
+SuperBAS fixes that! It is designed to match your rose-tinted view of older BASIC languages, not the frustration you felt with certain features, and it compiles down to native binaries or runs right in a webpage with C# and JS transpilation. SuperBAS is not emulated or interpreted.
 
 ## Targets
 
