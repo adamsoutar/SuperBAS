@@ -22,7 +22,7 @@ return (X_number * X_number);
                 case -1:
                     return;
                 case 1:
-goto case 3;case 3:userFn_SQUARE_number((double)(4));
+goto case 3;case 3:Console.WriteLine(userFn_SQUARE_number((double)(4)));
 goto case -1;
                 default:
                     throw new Exception($"Invalid GOTO { lineNumber } - Not a line");

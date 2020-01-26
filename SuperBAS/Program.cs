@@ -15,6 +15,7 @@ namespace SuperBAS
 
             string file;
             string output;
+            string lang;
 
             if (args.Length == 0)
             {
@@ -30,7 +31,14 @@ namespace SuperBAS
             }
             else output = args[1];
 
-            var configFolder = "/Users/adam/Documents/Mac Projects/SuperBAS/SuperBAS.Transpiler.Configs/CSharp";
+            if (args.Length < 3)
+            {
+                Console.WriteLine("Target language:");
+                lang = Console.ReadLine();
+            }
+            else lang = args[2];
+
+            var configFolder = "/Users/adam/Documents/Mac Projects/SuperBAS/SuperBAS.Transpiler.Configs/" + lang;
             var target = TargetLanguage.FromDirectory(configFolder);
 
             Console.WriteLine($"[info] Target language: {target.Config["meta"]["name"]}");
