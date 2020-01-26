@@ -83,7 +83,8 @@
     },
     "arrays": {
       "access": "%array%[%dimensions%]",
-      "indexSeperator": ", ",
+      "defIndexSeperator": ", ",
+      "accessIndexSeperator": ", ",
       "index": "(int)(%val%)",
       "stringInit": "%array% = new string[%dimensions%];",
       "numberInit": "%array% = new double[%dimensions%];",

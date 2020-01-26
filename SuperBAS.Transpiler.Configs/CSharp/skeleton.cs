@@ -43,7 +43,7 @@ namespace UserProgram
             sw.Write(contents);
             sw.Close();
         }
-        
+
         static double GetLength<T> (T thing)
         {
             // Get the length of anything.
@@ -69,7 +69,7 @@ namespace UserProgram
                 return dA.Length;
             }
 
-            throw new Exception("SuperBAS cannot get the length of that object.");
+            throw new Exception("[SuperBAS] Cannot get the length of that object.");
         }
     }
 }

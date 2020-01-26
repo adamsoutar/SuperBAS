@@ -285,7 +285,7 @@ It's a valid command, but not yet implemented in the new transpiler.
                 args.Add(Target.GetSnippet("arrays", "index", "val", exp));
             }
 
-            var dims = string.Join(Target.GetSnippet("arrays", "indexSeperator"), args);
+            var dims = string.Join(Target.GetSnippet("arrays", "defIndexSeperator"), args);
             var type = (call.FunctionName.IsString ? "string" : "number");
 
             // Initialisation - this runs every time this line is hit
@@ -297,7 +297,7 @@ It's a valid command, but not yet implemented in the new transpiler.
 
             var seps = "";
             for (int i = 1; i < args.Count; i++)
-                seps += Target.GetSnippet("arrays", "indexSeperator");
+                seps += Target.GetSnippet("arrays", "defIndexSeperator");
             // Definition, this happens once at the top
             var decl = Target.GetComplexSnippet("arrays", type + "Declaration", new Dictionary<string, string>()
             {
@@ -394,7 +394,7 @@ It's a valid command, but not yet implemented in the new transpiler.
                     args.Add(Target.GetSnippet("arrays", "index", "val", exp));
                 }
 
-                var dims = string.Join(Target.GetSnippet("arrays", "indexSeperator"), args);
+                var dims = string.Join(Target.GetSnippet("arrays", "accessIndexSeperator"), args);
                 var access = Target.GetComplexSnippet("arrays", "access", new Dictionary<string, string>()
                 {
                     { "array", arrayName },

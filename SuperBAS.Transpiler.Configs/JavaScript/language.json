@@ -82,11 +82,12 @@
       "remove": "%name%.splice(parseInt(%index%), 1)"
     },
     "arrays": {
-      "access": "getArrayValue(%array%, %dimensions%)",
-      "indexSeperator": ", ",
+      "access": "%array%[%dimensions%]",
+      "defIndexSeperator": ", ",
+      "accessIndexSeperator": "][",
       "index": "parseInt(%val%)",
-      "stringInit": "%array% = newDim(%dimensions%)\n",
-      "numberInit": "%array% = newDim(%dimensions%)\n",
+      "stringInit": "%array% = newDim(true, %dimensions%)\n",
+      "numberInit": "%array% = newDim(false, %dimensions%)\n",
       "stringDeclaration": "let %array% = []\n",
       "numberDeclaration": "let %array% = []\n"
     },
