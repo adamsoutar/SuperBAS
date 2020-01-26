@@ -33,7 +33,7 @@ namespace SuperBAS.Transpiler
         public static TargetLanguage FromResources (string language)
         {
             var assembly = typeof(TargetLanguage).Assembly;
-
+            
             Stream config = assembly.GetManifestResourceStream(
                 $"SuperBAS.Transpiler.Targets.{language}.language.json"
                 );

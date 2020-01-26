@@ -10,7 +10,7 @@ namespace SuperBAS
     {
         static void Main(string[] args)
         {
-            Autoupdater.thisVersion = "0.4";
+            Autoupdater.thisVersion = "0.5";
             Autoupdater.UpdateIfAvailable();
 
             string file;
