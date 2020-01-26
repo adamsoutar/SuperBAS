@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run SuperBAS",
+      "type":"coreclr",
+      "args": [],
+      "cwd": "${workspaceFolder}/build",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/build/bin/Debug/netcoreapp3.1/SuperBAS.VSCodeProject.dll",
+      "console": "integratedTerminal"
+    }
+  ]
+}

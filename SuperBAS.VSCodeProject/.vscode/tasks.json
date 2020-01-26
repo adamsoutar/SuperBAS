@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "${workspaceFolder}/build/build.sh",
+      "type": "process",
+      "args": [],
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    }
+  ]
+}
