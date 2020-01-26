@@ -10,7 +10,7 @@ namespace SuperBAS.Transpiler
         public dynamic Config;
         public string Skeleton;
 
-        public static TargetLanguage FromDirectory (string path)
+        public static TargetLanguage FromDisk (string path)
         {
             var sR = new StreamReader(Path.Combine(path, "language.json"));
             var cfgText = sR.ReadToEnd();
@@ -22,6 +22,33 @@ namespace SuperBAS.Transpiler
 
             var ext = p.Config["meta"]["filetype"];
             sR = new StreamReader(Path.Combine(path, "skeleton" + ext));
+            var code = sR.ReadToEnd();
+            sR.Close();
+
+            p.Skeleton = code;
+
+            return p;
+        }
+
+        public static TargetLanguage FromResources (string language)
+        {
+            var assembly = typeof(TargetLanguage).Assembly;
+
+            Stream config = assembly.GetManifestResourceStream(
+                $"SuperBAS.Transpiler.Targets.{language}.language.json"
+                );
+            var sR = new StreamReader(config);
+            var cfgText = sR.ReadToEnd();
+            sR.Close();
+
+            var p = new TargetLanguage();
+            p.Config = JsonConvert.DeserializeObject(cfgText);
+
+            var ext = p.Config["meta"]["filetype"];
+            Stream skele = assembly.GetManifestResourceStream(
+                $"SuperBAS.Transpiler.Targets.{language}.skeleton{ext}"
+                );
+            sR = new StreamReader(skele);
             var code = sR.ReadToEnd();
             sR.Close();
 

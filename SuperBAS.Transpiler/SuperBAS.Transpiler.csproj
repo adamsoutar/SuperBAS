@@ -10,4 +10,18 @@
   <ItemGroup>
     <ProjectReference Include="..\SuperBAS.Parser\SuperBAS.Parser.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Targets\CSharp\skeleton.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Targets\CSharp\skeleton.cs" />
+    <EmbeddedResource Include="Targets\CSharp\language.json" />
+    <EmbeddedResource Include="Targets\JavaScript\skeleton.js" />
+    <EmbeddedResource Include="Targets\JavaScript\language.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Targets\CSharp\language.json" />
+    <None Remove="Targets\JavaScript\skeleton.js" />
+    <None Remove="Targets\JavaScript\language.json" />
+  </ItemGroup>
 </Project>
