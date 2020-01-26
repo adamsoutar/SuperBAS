@@ -1,4 +1,4 @@
-# SuperBAS
+# 👾 SuperBAS
 
 A compiler for turning a BASIC superset into native executables and/or web code.
 
@@ -6,25 +6,41 @@ It's based on .NET Core 3 and supports Windows, macOS & Linux
 
 ## What and why?
 
-SuperBAS is based on ZX BASIC, designed to simplify complex parts and add commands for interfacing with modern operating systems.
+SuperBAS (Superset of BASIC) is based on ZX BASIC, designed to simplify complex parts and add commands for interfacing with modern operating systems.
 
 ```
-1 LET name$ = "SuperBAS!"
-2 WRITEFILE "./hi.txt", "Hello, I'm " + name$
+1 name$ = "SuperBAS!"
+2 PRINT "Hello, " + name$
+3 GOTO 1
 ```
 
 So why?
 
 **People who played around with home computers in the 80s like the Spectrum or Amstrad can feel alienated by programming for modern PCs**, and emulators or interpreters for old languages are plagued by low speed or dated sugar-less syntax.
 
-SuperBAS fixes that! It is designed to match your nostalgia for older BASIC languages, not your frustration, and it compiles right down to a native binary via C# (or runs in a webpage with experimental Javascript transpilation). SuperBAS is not emulated or interpreted.
+SuperBAS fixes that! It is designed to match your rose-tinted view of older BASIC languages, not the frustration you felt with certain features, and it compiles right down to native binaries or runs right in a webpage with C# and JS transpilation. SuperBAS is not emulated or interpreted.
+
+## Targets
+
+SuperBAS' compiler is designed to target almost any language you can think of. Adding support for a new target is near-trivial for someone well antiquated with their language.
+
+#### Supported right now
+
+ - C#
+ - JavaScript
+
+#### Support is planned
+
+ - Go
+ - Ruby
+ - Your favourite language? PRs are welcome
 
 ## Usage
 
 Download [a release for your platform](https://github.com/adamsoutar/SuperBAS/releases), run it like so:
 
 ```bash
-./SuperBas test.sbas Program.cs native
+./SuperBAS test.sbas Program.cs CSharp
 ```
 
 You can compile the resulting file on Windows with a command like this (assuming you have VS Build Tools installed):
@@ -36,10 +52,8 @@ csc Output.cs /out:MyProgram.exe /optimize
 or
 
 ```bash
-./SuperBAS test.sbas Script.js web
+./SuperBAS test.sbas Script.js JavaScript
 ```
-
-*Note: JS transpilation is at a pre-alpha stage*
 
 ## So where do I start?
 
@@ -49,6 +63,6 @@ If you're looking for full examples like FizzBuzz, see [/BasicCode](https://gith
 
 Watch out though, it's a little full of test scripts in there.
 
-## Don't like writing in Notepad?
+## Live life in colour!
 
 Syntax highlighting is available for [Atom](https://github.com/adamsoutar/atom-language-superbas) and [VS Code](https://github.com/adamsoutar/vscode-language-superbas)
