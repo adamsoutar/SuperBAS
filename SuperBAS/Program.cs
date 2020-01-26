@@ -38,6 +38,8 @@ namespace SuperBAS
             }
             else lang = args[2];
 
+            // TODO: Remove this and replace with Embedded References to the JSON ASAP
+            // https://stackoverflow.com/questions/38762368/embedded-resource-in-net-core-libraries
             var configFolder = "/Users/adam/Documents/Mac Projects/SuperBAS/SuperBAS.Transpiler.Configs/" + lang;
             var target = TargetLanguage.FromDirectory(configFolder);
 
