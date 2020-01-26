@@ -9,8 +9,11 @@ Compilation targets I'd like to have via new config system:
  - JavaScript
  - C#
  - go
+ - Ruby
  - C++/Rust?
  - Python?
+
+Embed language configs into the executable with Embedded Resources
 
 Working PINTAT
 
