@@ -1,3 +1,5 @@
+mkdir -p ./releases
+
 cd SuperBAS
 
 # Keep the spec for each release
