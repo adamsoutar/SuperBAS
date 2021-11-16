@@ -31,7 +31,7 @@ namespace SuperBAS.Transpiler
             Target = target;
             lines = parser.GenerateAbstractSyntaxTree();
         }
-    
+
         public string Croak (string message)
         {
             throw new Exception($@"
@@ -551,7 +551,7 @@ It's a valid command, but not yet implemented in the new transpiler.
                 declarations += Target.GetSnippet("vars", type, "name", name);
             }
 
-            return name;
+            return Target.GetSnippet("vars", "varAccess", "name", name);
         }
     }
 }

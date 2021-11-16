@@ -63,7 +63,8 @@
     "vars": {
       "stringDeclaration": "static string %name% = \"\";\n",
       "numberDeclaration": "static double %name% = 0.0;\n",
-      "boolDeclaration": "static bool %name% = false;\n"
+      "boolDeclaration": "static bool %name% = false;\n",
+      "varAccess": "%name%"
     },
     "functions": {
       "argSeperator": ", ",

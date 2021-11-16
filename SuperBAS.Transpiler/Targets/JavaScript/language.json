@@ -63,7 +63,8 @@
     "vars": {
       "stringDeclaration": "let %name% = \"\"\n",
       "numberDeclaration": "let %name% = 0\n",
-      "boolDeclaration": "let %name% = false\n"
+      "boolDeclaration": "let %name% = false\n",
+      "varAccess": "%name%"
     },
     "functions": {
       "argSeperator": ", ",
