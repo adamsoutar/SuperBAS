@@ -18,6 +18,8 @@
     <EmbeddedResource Include="Targets\CSharp\language.json" />
     <EmbeddedResource Include="Targets\JavaScript\skeleton.js" />
     <EmbeddedResource Include="Targets\JavaScript\language.json" />
+    <EmbeddedResource Include="Targets\Rust\skeleton.rs" />
+    <EmbeddedResource Include="Targets\Rust\language.json" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Targets\CSharp\language.json" />

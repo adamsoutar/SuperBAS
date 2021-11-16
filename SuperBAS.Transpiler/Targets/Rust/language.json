@@ -1,0 +1,118 @@
+{
+  "meta": {
+    "name": "Rust",
+    "filetype": ".rs",
+    "printInfo": "You will need a Rust toolchain to run this code."
+  },
+  "snippets": {
+    "injectionPoints": {
+      "declarations": "/*DECLARATIONS*/",
+      "body": "/*BODY*/",
+      "lowestLine": "/*LOWESTLINE*/"
+    },
+    "commands": {
+      "print": "println!(\"{}\", %text%)\n",
+      "cls": "unimplemented!()\n",
+      "goto": "line = %lineNumber%; continue\n",
+      "gosub": "self.go_sub(%lineNumber%)\n",
+
+      "return": "return\n",
+      "sleep": "await sleep(%time%)\n",
+
+      "next": "%counter% += %step%; if (%condition%) { %skipVar% = true; %goto% }",
+      "ink": "console.log('INK is not yet supported in JS.')\n",
+      "paper": "console.log('PAPER is not yet supported in JS.')\n",
+      "exit": "stop = true; return\n",
+      "stop": "prompt('Waiting for Enter press.'); stop = true; return\n",
+      "waitkey": "prompt('Waiting for Enter press.')\n",
+      "inputString": "%var% = prompt('Enter response:')\n",
+      "inputNumber": "%var% = parseFloat(prompt('Enter response:'))\n",
+      "writefile": "writeAllFile(%fileName%, %contents%, false)\n",
+      "appendfile": "writeAllFile(%fileName%, %contents%, true)\n",
+
+      "expression": "%exp%;\n"
+    },
+    "loops": {
+      "check": "if (%skip%) { %skip% = false; } else { %loopVar% = %start%; }\n",
+      "increment": "%counter% += %step%\n",
+      "jump": "if (%condition%) { %skip% = true; %goto% }\n",
+      "topofJump": "%skip% = true; %goto%\n"
+    },
+    "stdLib": {
+      "str": "(%val%).toString()",
+      "val": "parseFloat(%val%)",
+      "sin": "Math.sin(%val%)",
+      "cos": "Math.cos(%val%)",
+      "tan": "Math.tan(%val%)",
+      "floor": "Math.floor(%val%)",
+      "ceil": "Math.ceil(%val%)",
+      "random": "Math.random()",
+      "round": "(+(%val%).toFixed(%dps%))",
+      "readfile": "readAllFile(%val%)",
+      "split": "(%val%).split(%sep%)",
+      "join": "(%val%).join(%sep%)",
+      "len": "(%val%).length"
+    },
+    "structures": {
+      "if": "if %condition% { %body% }",
+      "else": " else { %body% }"
+    },
+    "cases": {
+      "cases": "%lineNumber%f64 => {",
+      "endCase": "; line = %nextLine%f64; continue; }"
+    },
+    "vars": {
+      "stringDeclaration": "pub %name%: String,\n",
+      "numberDeclaration": "pub %name%: f64,\n",
+      "boolDeclaration": "pub %name%: bool,\n",
+      "varAccess": "self.%name%",
+    },
+    "functions": {
+      "argSeperator": ", ",
+      "stringDeclaration": "function userFn_%name%(%args%) { \nreturn %exp%\n }",
+      "numberDeclaration": "function userFn_%name%(%args%) { \nreturn %exp%\n }",
+      "stringArg": "%arg%",
+      "numberArg": "%arg%",
+      "call": "userFn_%name%(%args%)"
+    },
+    "lists": {
+      "stringDeclaration": "let %name% = []\n",
+      "numberDeclaration": "let %name% = []\n",
+      "stringInit": "%name% = []\n",
+      "numberInit": "%name% = []\n",
+      "add": "%name%.push(%val%)\n",
+      "remove": "%name%.splice(parseInt(%index%), 1)"
+    },
+    "arrays": {
+      "access": "%array%[%dimensions%]",
+      "defIndexSeperator": ", ",
+      "accessIndexSeperator": "][",
+      "index": "parseInt(%val%)",
+      "stringInit": "%array% = newDim(true, %dimensions%)\n",
+      "numberInit": "%array% = newDim(false, %dimensions%)\n",
+      "stringDeclaration": "let %array% = []\n",
+      "numberDeclaration": "let %array% = []\n"
+    },
+    "operators": {
+      "=": "%a% = %b%\n",
+      "==": "(%a% == %b%)",
+      "<": "(%a% < %b%)",
+      ">": "(%a% > %b%)",
+      "<=": "(%a% <= %b%)",
+      ">=": "(%a% >= %b%)",
+      "!=": "(%a% != %b%)",
+      "AND": "(%a% && %b%)",
+      "OR": "(%a% || %b%)",
+      "NOT": "!(%a%)",
+      "+": "(%a% + %b%)",
+      "-": "(%a% - %b%)",
+      "*": "(%a% * %b%)",
+      "/": "(%a% / %b%)",
+      "MOD": "(%a% % %b%)"
+    },
+    "expressions": {
+      "string": "String::from(\"%value%\")",
+      "number": "%value%f64"
+    }
+  }
+}
