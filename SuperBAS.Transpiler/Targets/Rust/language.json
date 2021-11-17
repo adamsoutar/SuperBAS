@@ -15,9 +15,8 @@
       "cls": "unimplemented!()\n",
       "goto": "line = %lineNumber%; continue\n",
       "gosub": "self.go_sub(%lineNumber%)\n",
-
       "return": "return\n",
-      "sleep": "await sleep(%time%)\n",
+      "sleep": "thread::sleep(time::Duration::from_millis((%time%) as u64))\n",
 
       "next": "%counter% += %step%; if (%condition%) { %skipVar% = true; %goto% }",
       "ink": "console.log('INK is not yet supported in JS.')\n",

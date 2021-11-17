@@ -1,3 +1,5 @@
+use std::{thread, time};
+
 #[derive(Default)]
 pub struct SuperBASProgram {
     /*DECLARATIONS*/
