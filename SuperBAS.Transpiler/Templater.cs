@@ -169,8 +169,11 @@ It's a valid command, but not yet implemented in the new transpiler.
                 var counter = GetCodeForVar(loopVar);
 
                 // Bool for skip reassign, not exposed to user code
-                var skp = $"{counter}_skip";
-                declarations += Target.GetSnippet("vars", "boolDeclaration", "name", skp);
+                var forSkip = GetCodeForVar(loopVar, true, false);
+                var skpDecl = $"{forSkip}_skip";
+                var skp = Target.GetSnippet("vars", "varAccess", "name", skpDecl);
+
+                declarations += Target.GetSnippet("vars", "boolDeclaration", "name", skpDecl);
 
                 var startCount = forLoop.Assignment.Right;
                 var condition = new ASTBinary()
@@ -540,7 +543,7 @@ It's a valid command, but not yet implemented in the new transpiler.
             return Croak("Unsupported expression type in AST.");
         }
 
-        public string GetCodeForVar (ASTVariable vr, bool autoDefine = true)
+        public string GetCodeForVar (ASTVariable vr, bool autoDefine = true, bool usesAccess = true)
         {
             var name = vr.IsString ? vr.Name + "_string" : vr.Name + "_number";
 
@@ -552,7 +555,9 @@ It's a valid command, but not yet implemented in the new transpiler.
                 declarations += Target.GetSnippet("vars", type, "name", name);
             }
 
-            return Target.GetSnippet("vars", "varAccess", "name", name);
+            return usesAccess
+              ? Target.GetSnippet("vars", "varAccess", "name", name)
+              : name;
         }
     }
 }
