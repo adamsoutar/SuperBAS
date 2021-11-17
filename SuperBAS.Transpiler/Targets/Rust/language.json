@@ -19,9 +19,11 @@
       "sleep": "thread::sleep(time::Duration::from_millis((%time%) as u64))\n",
       "next": "%counter% += %step%; if %condition% { %skipVar% = true; %goto% }",
 
-      "ink": "console.log('INK is not yet supported in JS.')\n",
-      "paper": "console.log('PAPER is not yet supported in JS.')\n",
-      "exit": "stop = true; return\n",
+      "ink": "println!('INK is not yet supported in Rust.')\n",
+      "paper": "println!('PAPER is not yet supported in Rust.')\n",
+
+      "exit": "process::exit(0)\n",
+      
       "stop": "prompt('Waiting for Enter press.'); stop = true; return\n",
       "waitkey": "prompt('Waiting for Enter press.')\n",
       "inputString": "%var% = prompt('Enter response:')\n",
