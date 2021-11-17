@@ -58,7 +58,7 @@
       "else": " else { %body% }"
     },
     "cases": {
-      "cases": "%lineNumber%f64 => {",
+      "cases": "else if line == %lineNumber%f64 {",
       "endCase": "; line = %nextLine%f64; continue; }"
     },
     "vars": {
