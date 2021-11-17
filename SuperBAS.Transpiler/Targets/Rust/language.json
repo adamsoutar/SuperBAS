@@ -17,8 +17,8 @@
       "gosub": "self.go_sub(%lineNumber%)\n",
       "return": "return\n",
       "sleep": "thread::sleep(time::Duration::from_millis((%time%) as u64))\n",
+      "next": "%counter% += %step%; if %condition% { %skipVar% = true; %goto% }",
 
-      "next": "%counter% += %step%; if (%condition%) { %skipVar% = true; %goto% }",
       "ink": "console.log('INK is not yet supported in JS.')\n",
       "paper": "console.log('PAPER is not yet supported in JS.')\n",
       "exit": "stop = true; return\n",
@@ -32,9 +32,9 @@
       "expression": "%exp%;\n"
     },
     "loops": {
-      "check": "if (%skip%) { %skip% = false; } else { %loopVar% = %start%; }\n",
-      "increment": "%counter% += %step%\n",
-      "jump": "if (%condition%) { %skip% = true; %goto% }\n",
+      "check": "if %skip% { %skip% = false; } else { %loopVar% = %start%; }\n",
+      "increment": "%counter% += %step%;\n",
+      "jump": "if %condition% { %skip% = true; %goto% }\n",
       "topofJump": "%skip% = true; %goto%\n"
     },
     "stdLib": {
