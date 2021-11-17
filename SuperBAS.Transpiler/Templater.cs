@@ -338,7 +338,8 @@ It's a valid command, but not yet implemented in the new transpiler.
                 { "step", GetCodeForExpression(loop.Step) }
             });
 
-            var gotoCode = Target.GetSnippet("commands", "goto", "lineNumber", loop.DefinedOnLine.ToString());
+            var gotoLine = Target.GetSnippet("expressions", "number", "value", loop.DefinedOnLine.ToString());
+            var gotoCode = Target.GetSnippet("commands", "goto", "lineNumber", gotoLine);
             var jump = Target.GetComplexSnippet("loops", "jump", new Dictionary<string, string>()
             {
                 { "condition", GetCodeForExpression(loop.Condition) },
